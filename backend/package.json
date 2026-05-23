@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/Nnavodya/MERN-StudentManagementSystem/issues"
   },
-  "homepage": "https://github.com/Nnavodya/MERN-StudentManagementSystem#readme"
+  "homepage": "https://github.com/Nnavodya/MERN-StudentManagementSystem#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.6.2"
+  }
 }
