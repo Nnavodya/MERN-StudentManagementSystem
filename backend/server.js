@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
-app.use(express.json());        // body-parser අවශ්‍ය නැත — Express built-in
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // MongoDB connect
@@ -28,9 +28,9 @@ app.get('/', (req, res) => {
   res.json({ message: 'Student MS API is running!' });
 });
 
-// Routes (ඉදිරියේදී add කරන්න)
-// const studentRoutes = require('./routes/students');
-// app.use('/api/students', studentRoutes);
+
+const studentRoutes = require('./routes/Students.js');
+app.use('/api/students', studentRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is up and running on port number: ${PORT}`);
