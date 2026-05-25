@@ -48,7 +48,7 @@ router.route("/update/:id").post(async(req, res) => {
     };
 //await is used to wait for the promise to resolve before moving on to the next line of code. This is useful when you want to perform an asynchronous operation, such as updating a student in the database, and you want to ensure that the operation is completed before sending a response back to the client.
     const update = await Student.findByIdAndUpdate(userId, updateStudent).then(() => {
-        res.status(200).send({ status: "Student updated", student: update })
+        res.status(200).send({ status: "Student updated" })
     }).catch((err) => {
         console.log(err);
         res.status(500).send({ status: "Error with updating data", error: err.message });
@@ -75,7 +75,7 @@ router.route("/delete/:id").delete(async(req, res) => {
 router.route("/get/:id").get(async(req, res) => {
     let userId = req.params.id;
     const student = await Student.findById(userId).then((student) => {
-        res.status(200).send({ status: "Student fetched", student });
+        res.status(200).send({ status: "Student fetched", student: student });
     }).catch((err) => {
         console.log(err);
         res.status(500).send({ status: "Error with fetching data", error: err.message });
