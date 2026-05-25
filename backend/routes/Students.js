@@ -52,11 +52,18 @@ router.route("/update/:id").put(async(req, res) => {
         const update = await Student.findByIdAndUpdate(
             userId,
             updateStudent,
-            { new: true } //new: true is used to return the updated student object instead of the original student object
+            { returnDocument: 'after' } //returnDocument: 'after' is used to return the updated student object instead of the original student object. { new: true } is deprecated in newer versions of mongoose.
         );
-        res.status(200).send({ status: "Student updated", student: update })
+        res.status(200).send({ status: "Student updated", student: update });
     } catch(err) {
         console.log(err);
+        //duplicate email error handle කරනවා. E11000 is the error code for duplicate key error in MongoDB.
+        if (err.code === 11000) {
+            return res.status(400).send({
+                status: "Error",
+                error: "Email already exists! Please use a different email."
+            });
+        }
         res.status(500).send({ status: "Error with updating data", error: err.message });
     }
 });
