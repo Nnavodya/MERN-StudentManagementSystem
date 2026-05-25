@@ -24,13 +24,14 @@ router.route("/add").post((req, res) => {
 });
 
 //router to get all students details to the frontend from the database
-router.route("/").get((req, res) => {
-    Student.find()
-        .then((students) => res.json(students))
-        .catch((err) => {
-            console.log(err);
-            res.status(400).json("Error: " + err);
-        });
+router.route("/").get(async(req, res) => {
+    try {
+        const students = await Student.find();
+        res.status(200).json(students);
+    } catch(err) {
+        console.log(err);
+        res.status(400).json("Error: " + err);
+    }
 });
 
 //http://localhost:5000/api/students/update/:id
@@ -46,13 +47,18 @@ router.route("/update/:id").put(async(req, res) => {
         age: Number(age),
         gender
     };
-//await is used to wait for the promise to resolve before moving on to the next line of code. This is useful when you want to perform an asynchronous operation, such as updating a student in the database, and you want to ensure that the operation is completed before sending a response back to the client.
-    const update = await Student.findByIdAndUpdate(userId, updateStudent).then(() => {
-        res.status(200).send({ status: "Student updated" })
-    }).catch((err) => {
+    //await is used to wait for the promise to resolve before moving on to the next line of code. This is useful when you want to perform an asynchronous operation, such as updating a student in the database, and you want to ensure that the operation is completed before sending a response back to the client.
+    try {
+        const update = await Student.findByIdAndUpdate(
+            userId,
+            updateStudent,
+            { new: true } //new: true is used to return the updated student object instead of the original student object
+        );
+        res.status(200).send({ status: "Student updated", student: update })
+    } catch(err) {
         console.log(err);
         res.status(500).send({ status: "Error with updating data", error: err.message });
-    });
+    }
 });
 
 //this is the router to delete the student details.Using the user id we can delete the user details from the database.Also we can use the same user id to update the user details from the database.Using the same user id we can perform both update and delete operations on the user details from the database.
@@ -60,26 +66,26 @@ router.route("/delete/:id").delete(async(req, res) => {
     let userId = req.params.id;
 
     //findByIdAndDelete is a mongoose method that is used to delete a document from the database based on the id. It takes the id as a parameter and deletes the document that matches the id from the database. It returns a promise that resolves to the deleted document if it was found and deleted, or null if no document was found with the given id.
-    await Student.findByIdAndDelete(userId).then(() => {
+    try {
+        await Student.findByIdAndDelete(userId);
         res.status(200).send({ status: "Student deleted" });
-
-    }).catch((err) => {
+    } catch (err) {
         console.log(err);
-        //res.status(500).send({ status: "Error with deleting data", error: err.message });--- IGNORE --- ,this is always similar to res.status(500).send({ status: "Error with deleting data", error: err.message });
         res.status(500).send({ status: "Error with deleting data", error: err.message });
-    });
+    }
 });
 
 //this function is used to fetch only one student details from the database using the user id.Using the user id we can fetch the user details from the database and display it on the frontend.
 //meaning of the id in this ccode is the mongodb automatically generated unique id for each user.Using that id we can fetch the user details from the database and display it on the frontend.
 router.route("/get/:id").get(async(req, res) => {
     let userId = req.params.id;
-    const student = await Student.findById(userId).then((student) => {
+    try {
+        const student = await Student.findById(userId);
         res.status(200).send({ status: "Student fetched", student: student });
-    }).catch((err) => {
+    } catch (err) {
         console.log(err);
         res.status(500).send({ status: "Error with fetching data", error: err.message });
-    });
+    } 
 });
 
-module.exports = router;  
+module.exports = router;
