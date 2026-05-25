@@ -37,7 +37,7 @@ router.route("/").get((req, res) => {
 //router.route("/update/:id"),by using this we can fetch the user id after the above comment's url /update part.
 //router to update the student details.This will update only user we need to update.Not updating every users details.Mongodb automatically giving us a unique id for each user.Using that id we can update the user details.
 //router.route("/update/:id").put((req, res) => {--- IGNORE --- ,this is always similar to router.route("/update/:id").post((req, res) => {
-router.route("/update/:id").post(async(req, res) => {
+router.route("/update/:id").put(async(req, res) => {
     let userId = req.params.id;
     const { name, email, age, gender } = req.body; //fetching the user id from the url and storing it in a variable called userId
     const updateStudent = {
