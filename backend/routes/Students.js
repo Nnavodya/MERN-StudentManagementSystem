@@ -55,4 +55,17 @@ router.route("/update/:id").post(async(req, res) => {
     });
 });
 
+//this is the router to delete the student details.Using the user id we can delete the user details from the database.Also we can use the same user id to update the user details from the database.Using the same user id we can perform both update and delete operations on the user details from the database.
+router.route("/delete/:id").delete(async(req, res) => {
+    let userId = req.params.id;
+    //findByIdAndDelete is a mongoose method that is used to delete a document from the database based on the id. It takes the id as a parameter and deletes the document that matches the id from the database. It returns a promise that resolves to the deleted document if it was found and deleted, or null if no document was found with the given id.
+    await Student.findByIdAndDelete(userId).then(() => {
+        res.status(200).send({ status: "Student deleted" });
+    }).catch((err) => {
+        console.log(err);
+        //res.status(500).send({ status: "Error with deleting data", error: err.message });--- IGNORE --- ,this is always similar to res.status(500).send({ status: "Error with deleting data", error: err.message });
+        res.status(500).send({ status: "Error with deleting data", error: err.message });
+    });
+});
+
 module.exports = router;  
