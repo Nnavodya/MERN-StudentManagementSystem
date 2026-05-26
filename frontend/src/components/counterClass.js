@@ -22,3 +22,5 @@ class CounterClass extends React.Component {
       );
     }
 }
+
+export default CounterClass; // exporting the CounterClass component for use in other parts of the application  
