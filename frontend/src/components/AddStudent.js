@@ -117,6 +117,8 @@ function AddStudent() {
                   type="email"
                   name="email"
                   placeholder="Enter student email"
+                  value={email}                                    
+                  onChange={(e) => setEmail(e.target.value)}
                   value={formData.email}
                   onChange={handleChange}
                   required
