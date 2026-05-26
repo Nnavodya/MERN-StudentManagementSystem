@@ -1,11 +1,11 @@
-import react, { Component } from 'react';
+import React, { Component } from 'react';
 
 // CounterClass is a React class component that manages a counter using React's built-in state management.
 // The constructor initializes the component with a state object containing a 'number' property set to 0.
 // super() is called to invoke the parent React.Component constructor, which is required in class components.
 // The render method returns JSX that displays the current value of 'number' from the component's state.
 // this.state.number accesses the number property from the component's state and displays it inside an <h1> tag.
-class CounterClass extends React.Component {
+class CounterClass extends Component {
     constructor() {
         super(); // calling the parent React.Component constructor — required in every class component constructor
         this.state = {
