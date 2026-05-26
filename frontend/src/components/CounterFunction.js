@@ -14,3 +14,5 @@ function CounterFunction() {
       </div>
   );
 }
+
+export default CounterFunction;
