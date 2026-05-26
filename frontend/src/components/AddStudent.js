@@ -13,6 +13,10 @@ function AddStudent() {
     gender: ''
   });
 
+  const[name,setName] = useState('');
+  const[email,setEmail] = useState('');
+  const[age,setAge] = useState('');
+
   // state to show success or error message after form submission
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
