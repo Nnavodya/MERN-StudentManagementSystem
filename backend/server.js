@@ -15,17 +15,15 @@ app.use(express.urlencoded({ extended: true }));
 
 const URL = process.env.MONGODB_URL;
 
-// MongoDB connection
-mongoose.connect(URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
-
-const connection = mongoose.connection;
-
-connection.once('open', () => {
-  console.log('MongoDB connection established successfully!');
-});
+// MongoDB connection - removed deprecated useNewUrlParser and useUnifiedTopology options as they are not supported in newer versions of mongoose
+mongoose.connect(URL)
+  .then(() => {
+    console.log('MongoDB connection established successfully!');
+  })
+  .catch((err) => {
+    console.error('MongoDB connection failed:', err.message);
+    process.exit(1);
+  });
 
 // Routes
 const studentRouter = require('./routes/Students.js');
