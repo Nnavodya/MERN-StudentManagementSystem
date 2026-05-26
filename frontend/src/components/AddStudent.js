@@ -95,6 +95,8 @@ function AddStudent() {
                   type="text"
                   name="name" // name matches formData key
                   placeholder="Enter student full name"
+                  value={name}                                    
+                  onChange={(e) => setName(e.target.value)} 
                   value={formData.name}
                   onChange={handleChange} // update state on change
                   required // field is required
