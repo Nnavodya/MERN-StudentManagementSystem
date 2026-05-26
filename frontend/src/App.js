@@ -4,6 +4,7 @@ import './App.css';
 //because in the counterClass.js file we are exporting it as CounterClass and we should use the same name when we import it in the App.js file. If we use a different name it will give an error because it will not find the component with that name. So we should use the same name as we exported in the counterClass.js file when we import it in the App.js file.
 import CounterClass from './components/counterClass';
 import CounterFunction from './components/CounterFunction';
+import 'bootstrap/dist/css/bootstrap.min.css'; //importing bootstrap css file to use bootstrap classes in our components. This will allow us to use bootstrap classes in our components to style them easily without writing custom CSS. We can use bootstrap classes like btn, btn-primary, container, row, col, etc. in our components to style them according to our needs. This will save us time and effort in writing custom CSS for styling our components.
 
 function App() {
   return (
