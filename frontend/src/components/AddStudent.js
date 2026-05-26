@@ -13,10 +13,6 @@ function AddStudent() {
     gender: ''
   });
 
-  const[name,setName] = useState('');
-  const[email,setEmail] = useState('');
-  const[age,setAge] = useState('');
-
   // state to show success or error message after form submission
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -38,19 +34,14 @@ function AddStudent() {
     // sending POST request to backend to add new student
     axios.post('http://localhost:5000/students/add', formData)
       .then((res) => {
-        setSuccessMessage('Student added successfully! ✅'); // show success message
-        setErrorMessage(''); // clear error message
+        setSuccessMessage('Student added successfully! ✅');
+        setErrorMessage('');
         // reset form fields after successful submission
-        setFormData({
-          name: '',
-          email: '',
-          age: '',
-          gender: ''
-        });
+        setFormData({ name: '', email: '', age: '', gender: '' });
       })
       .catch((err) => {
-        setErrorMessage('Error adding student. Please try again! ❌'); // show error message
-        setSuccessMessage(''); // clear success message
+        setErrorMessage('Error adding student. Please try again! ❌');
+        setSuccessMessage('');
         console.log(err);
       });
   };
@@ -59,8 +50,6 @@ function AddStudent() {
     <Container className="mt-5">
       <Row className="justify-content-center">
         <Col md={6}>
-
-          {/* Form card */}
           <div style={{
             backgroundColor: '#1a1a2e',
             borderRadius: '15px',
@@ -68,38 +57,32 @@ function AddStudent() {
             boxShadow: '0 4px 20px rgba(0,0,0,0.3)'
           }}>
 
-            {/* Form title */}
             <h2 style={{ color: '#fff', textAlign: 'center', marginBottom: '30px' }}>
               ➕ Add New Student
             </h2>
 
-            {/* Success message - shows after successful form submission */}
+            {/* Success message */}
             {successMessage && (
               <Alert variant="success">{successMessage}</Alert>
             )}
 
-            {/* Error message - shows if form submission fails */}
+            {/* Error message */}
             {errorMessage && (
               <Alert variant="danger">{errorMessage}</Alert>
             )}
 
-            {/* Add Student Form */}
             <Form onSubmit={handleSubmit}>
 
               {/* Name field */}
               <Form.Group className="mb-3">
-                <Form.Label style={{ color: '#ccc' }}>
-                  👤 Full Name
-                </Form.Label>
+                <Form.Label style={{ color: '#ccc' }}>👤 Full Name</Form.Label>
                 <Form.Control
                   type="text"
-                  name="name" // name matches formData key
+                  name="name"
                   placeholder="Enter student full name"
-                  value={name}                                    
-                  onChange={(e) => setName(e.target.value)} 
-                  value={formData.name}
-                  onChange={handleChange} // update state on change
-                  required // field is required
+                  value={formData.name}        
+                  onChange={handleChange}       
+                  required
                   style={{
                     backgroundColor: '#16213e',
                     border: '1px solid #0f3460',
@@ -110,17 +93,13 @@ function AddStudent() {
 
               {/* Email field */}
               <Form.Group className="mb-3">
-                <Form.Label style={{ color: '#ccc' }}>
-                  📧 Email Address
-                </Form.Label>
+                <Form.Label style={{ color: '#ccc' }}>📧 Email Address</Form.Label>
                 <Form.Control
                   type="email"
                   name="email"
                   placeholder="Enter student email"
-                    value={email}                                    
-                    onChange={(e) => setEmail(e.target.value)}
-                  value={formData.email}
-                  onChange={handleChange}
+                  value={formData.email}        
+                  onChange={handleChange}        
                   required
                   style={{
                     backgroundColor: '#16213e',
@@ -132,20 +111,16 @@ function AddStudent() {
 
               {/* Age field */}
               <Form.Group className="mb-3">
-                <Form.Label style={{ color: '#ccc' }}>
-                  🎂 Age
-                </Form.Label>
+                <Form.Label style={{ color: '#ccc' }}>🎂 Age</Form.Label>
                 <Form.Control
                   type="number"
                   name="age"
                   placeholder="Enter student age"
-                    value={age}                                    
-                  onChange={(e) => setAge(e.target.value)}
-                  value={formData.age}
-                  onChange={handleChange}
+                  value={formData.age}          
+                  onChange={handleChange}        
                   required
-                  min="1" // minimum age value
-                  max="100" // maximum age value
+                  min="1"
+                  max="100"
                   style={{
                     backgroundColor: '#16213e',
                     border: '1px solid #0f3460',
@@ -154,11 +129,9 @@ function AddStudent() {
                 />
               </Form.Group>
 
-              {/* Gender field - dropdown select */}
+              {/* Gender field */}
               <Form.Group className="mb-4">
-                <Form.Label style={{ color: '#ccc' }}>
-                  ⚥ Gender
-                </Form.Label>
+                <Form.Label style={{ color: '#ccc' }}>⚥ Gender</Form.Label>
                 <Form.Select
                   name="gender"
                   value={formData.gender}
@@ -177,37 +150,18 @@ function AddStudent() {
                 </Form.Select>
               </Form.Group>
 
-              {/* Submit and Reset buttons */}
+              {/* Buttons */}
               <Row>
                 <Col>
-                  {/* Submit button - sends form data to backend */}
-                  <Button
-                    variant="primary"
-                    type="submit"
-                    className="w-100"
-                    style={{
-                      backgroundColor: '#0f3460',
-                      border: 'none',
-                      padding: '10px'
-                    }}
-                  >
+                  <Button variant="primary" type="submit" className="w-100"
+                    style={{ backgroundColor: '#0f3460', border: 'none', padding: '10px' }}>
                     ➕ Add Student
                   </Button>
                 </Col>
                 <Col>
-                  {/* Reset button - clears all form fields */}
-                  <Button
-                    variant="outline-secondary"
-                    type="reset"
-                    className="w-100"
+                  <Button variant="outline-secondary" type="reset" className="w-100"
                     style={{ padding: '10px' }}
-                    onClick={() => setFormData({
-                      name: '',
-                      email: '',
-                      age: '',
-                      gender: ''
-                    })}
-                  >
+                    onClick={() => setFormData({ name: '', email: '', age: '', gender: '' })}>
                     🔄 Reset
                   </Button>
                 </Col>
@@ -219,6 +173,6 @@ function AddStudent() {
       </Row>
     </Container>
   );
-}
+} 
 
-export default AddStudent; // exporting AddStudent component for use in App.js
+export default AddStudent;
