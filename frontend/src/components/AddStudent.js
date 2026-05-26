@@ -117,8 +117,8 @@ function AddStudent() {
                   type="email"
                   name="email"
                   placeholder="Enter student email"
-                  value={email}                                    
-                  onChange={(e) => setEmail(e.target.value)}
+                    value={email}                                    
+                    onChange={(e) => setEmail(e.target.value)}
                   value={formData.email}
                   onChange={handleChange}
                   required
@@ -139,6 +139,8 @@ function AddStudent() {
                   type="number"
                   name="age"
                   placeholder="Enter student age"
+                    value={age}                                    
+                  onChange={(e) => setAge(e.target.value)}
                   value={formData.age}
                   onChange={handleChange}
                   required
