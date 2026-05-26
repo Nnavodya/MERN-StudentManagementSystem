@@ -3,12 +3,14 @@ import './App.css';
 //although our counterClass name is like that ,when we impoert it we should use in as CounterClass and we should add component name as <CounterClass>
 //because in the counterClass.js file we are exporting it as CounterClass and we should use the same name when we import it in the App.js file. If we use a different name it will give an error because it will not find the component with that name. So we should use the same name as we exported in the counterClass.js file when we import it in the App.js file.
 import CounterClass from './components/counterClass';
+import CounterFunction from './components/CounterFunction';
 
 function App() {
   return (
     <div className="App">
       <h1>Student Management System</h1>
       <CounterClass />
+      <CounterFunction />
     </div>
   );
 }
