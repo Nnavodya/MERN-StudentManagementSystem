@@ -34,6 +34,7 @@ function AddStudent() {
     // sending POST request to backend to add new student
     axios.post('http://localhost:5000/students/add', formData)
       .then((res) => {
+        alert("Student added successfully! ✅"); // show success alert
         setSuccessMessage('Student added successfully! ✅'); // show success message
         setErrorMessage(''); // clear error message
         // reset form fields after successful submission
