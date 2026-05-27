@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Alert } from 'react-bootstrap';
+import { Container, Table, Alert } from 'react-bootstrap';
 import axios from 'axios';
 
-// AllStudents component - displays all students from the database
+// AllStudents component - displays all students from the database in a table
 function AllStudents() {
 
   // state to hold list of students fetched from database
@@ -14,18 +14,17 @@ function AllStudents() {
   // state to show loading text while fetching data
   const [loading, setLoading] = useState(true);
 
-  // useEffect runs when component first loads (mounts)
-  // empty array [] means it runs only once
+  // useEffect runs when component first loads
   useEffect(() => {
     fetchStudents();
   }, []);
 
-  // fetchStudents - sends GET request to backend to get all students
+  // fetchStudents - sends GET request to backend
   const fetchStudents = () => {
     axios.get('http://localhost:5000/students/')
       .then((res) => {
-        setStudents(res.data); // store fetched students in state
-        setLoading(false); // hide loading text
+        setStudents(res.data);
+        setLoading(false);
       })
       .catch((err) => {
         setError('Error fetching students!');
@@ -45,7 +44,36 @@ function AllStudents() {
       {loading ? (
         <p>⏳ Loading students...</p>
       ) : (
-        <p>Total Students: {students.length}</p>
+        // Students table
+        <Table striped bordered hover responsive>
+          <thead style={{ backgroundColor: '#1a1a2e', color: '#fff' }}>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Age</th>
+              <th>Gender</th>
+            </tr>
+          </thead>
+          <tbody>
+            {students.length === 0 ? (
+              <tr>
+                <td colSpan="5" className="text-center">No students found!</td>
+              </tr>
+            ) : (
+              // map() loops through each student and creates a table row
+              students.map((student, index) => (
+                <tr key={student._id}> {/* key prop uses MongoDB _id */}
+                  <td>{index + 1}</td>
+                  <td>{student.name}</td>
+                  <td>{student.email}</td>
+                  <td>{student.age}</td>
+                  <td>{student.gender}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </Table>
       )}
     </Container>
   );
