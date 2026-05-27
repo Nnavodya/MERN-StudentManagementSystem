@@ -38,6 +38,21 @@ const [femaleStudents, setFemaleStudents] = useState(0);
     axios.get('http://localhost:5000/students/')
       .then((res) => {
         setStudents(res.data);
+        // ===== Added dashboard statistics calculations =====
+// Calculates total, male and female student counts
+
+setTotalStudents(res.data.length);
+
+const maleCount = res.data.filter(
+  (student) => student.gender === 'Male'
+).length;
+
+const femaleCount = res.data.filter(
+  (student) => student.gender === 'Female'
+).length;
+
+setMaleStudents(maleCount);
+setFemaleStudents(femaleCount);
         setLoading(false);
       })
       .catch((err) => {
