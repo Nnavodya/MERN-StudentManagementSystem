@@ -352,20 +352,34 @@ const [validationErrors, setValidationErrors] = useState({
                   </Form.Label>
 
                   <Form.Control
-                    type="number"
-                    name="age"
-                    placeholder="Enter student age"
-                    value={formData.age}
-                    onChange={handleChange}
-                    required
-                    min="1"
-                    max="100"
-                    style={{
-                      backgroundColor: '#16213e',
-                      border: '1px solid #0f3460',
-                      color: '#fff'
-                    }}
-                  />
+            type="number"
+          name="age"
+            placeholder="Enter student age"
+            value={formData.age}
+            onChange={handleChange}
+             required
+  min="1"
+  max="100"
+  style={{
+    backgroundColor: '#16213e',
+    border: validationErrors.age
+      ? '1px solid #ff4d4f'
+      : '1px solid #0f3460',
+    color: '#fff',
+    transition: '0.3s',
+    boxShadow: validationErrors.age
+      ? '0 0 10px rgba(255,77,79,0.5)'
+      : 'none'
+  }}
+/>
+
+{/* ===== Added real-time age validation message ===== */}
+
+{validationErrors.age && (
+  <small style={{ color: '#ff4d4f' }}>
+    {validationErrors.age}
+  </small>
+)}
 
                 </Form.Group>
 
