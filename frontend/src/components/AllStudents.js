@@ -120,6 +120,14 @@ setFemaleStudents(femaleCount);
         transition: '0.3s',
         cursor: 'pointer'
       }}
+
+      onMouseEnter={(e) => {
+  e.currentTarget.style.transform = 'translateY(-5px)';
+}}
+
+onMouseLeave={(e) => {
+  e.currentTarget.style.transform = 'translateY(0px)';
+}}
     >
 
       <h5>📚 Total Students</h5>
@@ -146,6 +154,14 @@ setFemaleStudents(femaleCount);
         transition: '0.3s',
         cursor: 'pointer'
       }}
+
+      onMouseEnter={(e) => {
+  e.currentTarget.style.transform = 'translateY(-5px)';
+}}
+
+onMouseLeave={(e) => {
+  e.currentTarget.style.transform = 'translateY(0px)';
+}}
     >
 
       <h5>👨 Male Students</h5>
@@ -172,6 +188,13 @@ setFemaleStudents(femaleCount);
         transition: '0.3s',
         cursor: 'pointer'
       }}
+      onMouseEnter={(e) => {
+  e.currentTarget.style.transform = 'translateY(-5px)';
+}}
+
+onMouseLeave={(e) => {
+  e.currentTarget.style.transform = 'translateY(0px)';
+}}
     >
 
       <h5>👩 Female Students</h5>
