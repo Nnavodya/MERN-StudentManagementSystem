@@ -6,10 +6,9 @@
 // ===================================================
 
 import React, { useState, useEffect } from 'react';
-// Importing Bootstrap components for layout and UI
-// Added Spinner component for professional loading animation
 
-import { Container, Table, Button, Alert, Form, Row, Col, Spinner } from 'react-bootstrap';
+// Importing Bootstrap components for layout and UI
+import { Container, Table, Button, Alert, Form, Row, Col } from 'react-bootstrap';
 
 // axios is used to make HTTP requests to the backend API
 import axios from 'axios';
@@ -194,11 +193,9 @@ function AllStudents() {
               transition: '0.3s',
               cursor: 'pointer'
             }}
-            // lift card up on hover
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-5px)';
             }}
-            // return card to original position on mouse leave
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0px)';
             }}
@@ -222,11 +219,9 @@ function AllStudents() {
               transition: '0.3s',
               cursor: 'pointer'
             }}
-            // lift card up on hover
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-5px)';
             }}
-            // return card to original position on mouse leave
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0px)';
             }}
@@ -250,11 +245,9 @@ function AllStudents() {
               transition: '0.3s',
               cursor: 'pointer'
             }}
-            // lift card up on hover
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-5px)';
             }}
-            // return card to original position on mouse leave
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0px)';
             }}
@@ -290,23 +283,12 @@ function AllStudents() {
       <Row className="mb-3">
         <Col md={4}>
           {/* Search input — triggers filter on every keystroke via onChange */}
-          {/* ===== Modern Search Input ===== */}
-{/* Styled search bar with shadow and rounded corners */}
-
-<Form.Control
-  type="text"
-  placeholder="🔍 Search by name, email or gender..."
-  value={searchTerm}
-  onChange={(e) => setSearchTerm(e.target.value)}
-
-  style={{
-    borderRadius: '12px',
-    padding: '12px',
-    border: '1px solid #dcdcdc',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-    transition: '0.3s'
-  }}
-/>
+          <Form.Control
+            type="text"
+            placeholder="🔍 Search by name, email or gender..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </Col>
         <Col>
           {/* Show how many students match the current search */}
@@ -326,103 +308,115 @@ function AllStudents() {
       {/* Renders the table once loading is complete */}
 
       {loading ? (
+
+        // loading indicator shown while API request is in progress
         <p>⏳ Loading students...</p>
+
       ) : (
-        <Table striped bordered hover responsive>
 
-          {/* Table Header Row */}
-          <thead style={{ backgroundColor: '#1a1a2e', color: '#fff' }}>
-            <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Age</th>
-              <th>Gender</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+        // ===== Modern Students Table =====
+        // Added shadow, rounded corners and cleaner UI
+        // Note: JSX comments inside ternary must be inside a tag, not as standalone
 
-          {/* Table Body — renders filtered student rows */}
-          <tbody>
-            {filteredStudents.length === 0 ? (
+        <div
+          style={{
+            backgroundColor: '#fff',
+            padding: '20px',
+            borderRadius: '15px',
+            boxShadow: '0 4px 15px rgba(0,0,0,0.08)'
+          }}
+        >
 
-              // show message if no students match the search
+          <Table striped bordered hover responsive>
+
+            {/* Table Header Row */}
+            <thead style={{ backgroundColor: '#1a1a2e', color: '#fff' }}>
               <tr>
-                <td colSpan="6" className="text-center">
-
-  {/* ===== Empty State UI ===== */}
-  {/* Displays when no students match search results */}
-
-  <div
-    style={{
-      padding: '30px'
-    }}
-  >
-
-    {/* Empty state icon */}
-
-    <h1 style={{ fontSize: '60px' }}>
-      📭
-    </h1>
-
-    {/* Empty state title */}
-
-    <h4 style={{ color: '#1a1a2e' }}>
-      No Students Found
-    </h4>
-
-    {/* Empty state description */}
-
-    <p style={{ color: '#777' }}>
-      Try changing the search keyword or add a new student.
-    </p>
-
-  </div>
-
-</td>
+                <th>#</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Actions</th>
               </tr>
-            ) : (
+            </thead>
 
-              // map over filtered students and render a row for each
-              filteredStudents.map((student, index) => (
-                <tr key={student._id}>
+            {/* Table Body — renders filtered student rows */}
+            <tbody>
+              {filteredStudents.length === 0 ? (
 
-                  {/* Row number — starts from 1 */}
-                  <td>{index + 1}</td>
+                // show empty state UI if no students match the search
+                <tr>
+                  <td colSpan="6" className="text-center">
 
-                  {/* Student details from database */}
-                  <td>{student.name}</td>
-                  <td>{student.email}</td>
-                  <td>{student.age}</td>
-                  <td>{student.gender}</td>
+                    {/* ===== Empty State UI ===== */}
+                    {/* Displays when no students match search results */}
 
-                  {/* Action buttons for each student row */}
-                  <td>
+                    <div style={{ padding: '30px' }}>
 
-                    {/* Edit button — navigates to update page with student _id in URL */}
-                    <Button
-                      variant="warning"
-                      size="sm"
-                      className="me-2"
-                      onClick={() => navigate(`/update-student/${student._id}`)}>
-                      ✏️ Edit
-                    </Button>
+                      {/* Empty state icon */}
+                      <h1 style={{ fontSize: '60px' }}>📭</h1>
 
-                    {/* Delete button — calls deleteStudent with this student's _id */}
-                    <Button
-                      variant="danger"
-                      size="sm"
-                      onClick={() => deleteStudent(student._id)}>
-                      🗑️ Delete
-                    </Button>
+                      {/* Empty state title */}
+                      <h4 style={{ color: '#1a1a2e' }}>No Students Found</h4>
+
+                      {/* Empty state description */}
+                      <p style={{ color: '#777' }}>
+                        Try changing the search keyword or add a new student.
+                      </p>
+
+                    </div>
 
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </Table>
+
+              ) : (
+
+                // map over filtered students and render a row for each
+                filteredStudents.map((student, index) => (
+                  <tr key={student._id}>
+
+                    {/* Row number — starts from 1 */}
+                    <td>{index + 1}</td>
+
+                    {/* Student details from database */}
+                    <td>{student.name}</td>
+                    <td>{student.email}</td>
+                    <td>{student.age}</td>
+                    <td>{student.gender}</td>
+
+                    {/* Action buttons for each student row */}
+                    <td>
+
+                      {/* Edit button — navigates to update page with student _id in URL */}
+                      <Button
+                        variant="warning"
+                        size="sm"
+                        className="me-2"
+                        onClick={() => navigate(`/update-student/${student._id}`)}>
+                        ✏️ Edit
+                      </Button>
+
+                      {/* Delete button — calls deleteStudent with this student's _id */}
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={() => deleteStudent(student._id)}>
+                        🗑️ Delete
+                      </Button>
+
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+
+          </Table>
+
+        </div>
+
       )}
+
     </Container>
   );
 }
