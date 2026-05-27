@@ -191,6 +191,15 @@ const handleChange = (e) => {
 
   };
 
+  // ===== Added validation state =====
+// Stores validation errors for each field
+
+const [validationErrors, setValidationErrors] = useState({
+  name: '',
+  email: '',
+  age: ''
+});
+
   return (
 
     <>
