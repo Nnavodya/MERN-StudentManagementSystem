@@ -21,6 +21,11 @@ function App() {
         {/* Routes define which component to show for each URL path */}
         <Routes>
 
+          <AddStudent /> {/* This will render the AddStudent component on the home page ("/") */}
+
+          {/* Route for viewing all students — navigating to /students will show the AllStudents component */}
+          <Route path="/students" element={<AllStudents />} />
+
           {/* Route for adding a new student — navigating to /add-student will show the AddStudent form */}
           <Route path="/add-student" element={<AddStudent />} />
 
