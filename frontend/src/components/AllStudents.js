@@ -13,6 +13,14 @@ import { Container, Table, Button, Alert, Form, Row, Col } from 'react-bootstrap
 // axios is used to make HTTP requests to the backend API
 import axios from 'axios';
 
+// ===== Added Toastify Imports =====
+// Used for professional popup notifications
+
+import { ToastContainer, toast } from 'react-toastify';
+
+// Toastify CSS for notification styling
+import 'react-toastify/dist/ReactToastify.css';
+
 // useNavigate is used to redirect to other pages (update page)
 import { useNavigate } from 'react-router-dom';
 
@@ -394,6 +402,7 @@ function AllStudents() {
 >
 
                     {/* Row number — starts from 1 */}
+
                     <td>{index + 1}</td>
 
                     {/* Student details from database */}
