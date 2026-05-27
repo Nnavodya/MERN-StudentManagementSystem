@@ -15,13 +15,22 @@ function Header() {
           🎓 Student MS
         </Navbar.Brand>
 
-        {/* Toggle button for mobile view */}
+        {/* Toggle button for mobile view - shows hamburger menu on small screens */}
         <Navbar.Toggle aria-controls="student-ms-navbar" />
 
-        {/* Collapsible nav links */}
+        {/* Collapsible nav links - collapses on small screens */}
         <Navbar.Collapse id="student-ms-navbar">
-          <Nav className="ms-auto">
+          <Nav className="ms-auto"> {/* ms-auto pushes links to the right */}
+
+            {/* Home link */}
             <Nav.Link href="/">🏠 Home</Nav.Link>
+
+            {/* View all students link */}
+            <Nav.Link href="/students">👨‍🎓 Students</Nav.Link>
+
+            {/* Add new student link */}
+            <Nav.Link href="/add-student">➕ Add Student</Nav.Link>
+
           </Nav>
         </Navbar.Collapse>
 
