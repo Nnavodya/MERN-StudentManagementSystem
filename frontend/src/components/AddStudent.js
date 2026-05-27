@@ -314,18 +314,24 @@ const [validationErrors, setValidationErrors] = useState({
                   </Form.Label>
 
                   <Form.Control
-                    type="email"
-                    name="email"
-                    placeholder="Enter student email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    style={{
-                      backgroundColor: '#16213e',
-                      border: '1px solid #0f3460',
-                      color: '#fff'
-                    }}
-                  />
+  type="email"
+  name="email"
+  placeholder="Enter student email"
+  value={formData.email}
+  onChange={handleChange}
+  required
+  style={{
+    backgroundColor: '#16213e',
+    border: validationErrors.email
+      ? '1px solid #ff4d4f'
+      : '1px solid #0f3460',
+    color: '#fff',
+    transition: '0.3s',
+    boxShadow: validationErrors.email
+      ? '0 0 10px rgba(255,77,79,0.5)'
+      : 'none'
+  }}
+/>
 
                 </Form.Group>
 
