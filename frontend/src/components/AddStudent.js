@@ -271,18 +271,27 @@ const [validationErrors, setValidationErrors] = useState({
                   </Form.Label>
 
                   <Form.Control
-                    type="text"
-                    name="name"
-                    placeholder="Enter student full name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    style={{
-                      backgroundColor: '#16213e',
-                      border: '1px solid #0f3460',
-                      color: '#fff'
-                    }}
-                  />
+  type="text"
+  name="name"
+  placeholder="Enter student full name"
+  value={formData.name}
+  onChange={handleChange}
+  required
+
+  // ===== Added dynamic validation border =====
+
+  style={{
+    backgroundColor: '#16213e',
+    border: validationErrors.name
+      ? '1px solid #ff4d4f'
+      : '1px solid #0f3460',
+    color: '#fff',
+    transition: '0.3s',
+    boxShadow: validationErrors.name
+      ? '0 0 10px rgba(255,77,79,0.5)'
+      : 'none'
+  }}
+/>
 
                 </Form.Group>
 
