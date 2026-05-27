@@ -6,9 +6,10 @@
 // ===================================================
 
 import React, { useState, useEffect } from 'react';
-
 // Importing Bootstrap components for layout and UI
-import { Container, Table, Button, Alert, Form, Row, Col } from 'react-bootstrap';
+// Added Spinner component for professional loading animation
+
+import { Container, Table, Button, Alert, Form, Row, Col, Spinner } from 'react-bootstrap';
 
 // axios is used to make HTTP requests to the backend API
 import axios from 'axios';
