@@ -42,29 +42,82 @@ function AddStudent() {
 
   const [loading, setLoading] = useState(false);
 
+  // ===== Added validation state =====
+  // Stores validation errors for each field
+  // ===== Moved above handleChange to fix 'validateField is not defined' error =====
+
+  const [validationErrors, setValidationErrors] = useState({
+    name: '',
+    email: '',
+    age: ''
+  });
+
+  // ===== Added validateField function =====
+  // This function validates a single field and returns an error message
+  // Called in real-time as the user types in each field
+
+  const validateField = (name, value) => {
+
+    let error = '';
+
+    if (name === 'name') {
+      // name must be at least 3 characters
+      if (!value.trim()) {
+        error = 'Name is required.';
+      } else if (value.trim().length < 3) {
+        error = 'Name must contain at least 3 characters.';
+      }
+    }
+
+    if (name === 'email') {
+      // email must match standard email format
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!value.trim()) {
+        error = 'Email is required.';
+      } else if (!emailPattern.test(value.trim())) {
+        error = 'Please enter a valid email address.';
+      }
+    }
+
+    if (name === 'age') {
+      // age must be between 1 and 100
+      if (!value) {
+        error = 'Age is required.';
+      } else if (value < 1 || value > 100) {
+        error = 'Age must be between 1 and 100.';
+      }
+    }
+
+    // ===== Update validationErrors state with the new error for this field =====
+
+    setValidationErrors((prev) => ({
+      ...prev,
+      [name]: error
+    }));
+
+  };
+
   // handleChange is called every time the user types in a form field
   // it updates the formData state with the new value
 
-  // handleChange is called every time the user types in a form field
-// it updates the formData state with the new value
+  const handleChange = (e) => {
 
-const handleChange = (e) => {
+    // ===== Added real-time validation support =====
+    // Updates form data instantly while typing
 
-  // ===== Added real-time validation support =====
-  // Updates form data instantly while typing
+    const { name, value } = e.target;
 
-  const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
 
-  setFormData({
-  ...formData,
-  [name]: value
-});
+    // ===== Added real-time validation call =====
+    // Validates the field as the user types
 
-// ===== Added real-time validation call =====
+    validateField(name, value);
 
-validateField(name, value);
-
-};
+  };
 
   // handleSubmit is called when the user clicks the submit button
   // it sends the form data to the backend API
@@ -136,7 +189,7 @@ validateField(name, value);
       // sending POST request to backend to add new student
 
       const res = await axios.post(
-        'http://localhost:5000/students/add',
+        'http://localhost:5000/api/students/add',
         formData
       );
 
@@ -156,6 +209,14 @@ validateField(name, value);
         email: '',
         age: '',
         gender: ''
+      });
+
+      // ===== Clear validation errors after successful submission =====
+
+      setValidationErrors({
+        name: '',
+        email: '',
+        age: ''
       });
 
     } catch (err) {
@@ -194,15 +255,6 @@ validateField(name, value);
     }
 
   };
-
-  // ===== Added validation state =====
-// Stores validation errors for each field
-
-const [validationErrors, setValidationErrors] = useState({
-  name: '',
-  email: '',
-  age: ''
-});
 
   return (
 
@@ -271,39 +323,37 @@ const [validationErrors, setValidationErrors] = useState({
                   </Form.Label>
 
                   <Form.Control
-  type="text"
-  name="name"
-  placeholder="Enter student full name"
-  value={formData.name}
-  onChange={handleChange}
-  required
+                    type="text"
+                    name="name"
+                    placeholder="Enter student full name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
 
-  // ===== Added dynamic validation border =====
+                    // ===== Added dynamic validation border =====
 
-  style={{
-    backgroundColor: '#16213e',
-    border: validationErrors.name
-      ? '1px solid #ff4d4f'
-      : '1px solid #0f3460',
-    color: '#fff',
-    transition: '0.3s',
-    boxShadow: validationErrors.name
-      ? '0 0 10px rgba(255,77,79,0.5)'
-      : 'none'
-  }}
-/>
+                    style={{
+                      backgroundColor: '#16213e',
+                      border: validationErrors.name
+                        ? '1px solid #ff4d4f'
+                        : '1px solid #0f3460',
+                      color: '#fff',
+                      transition: '0.3s',
+                      boxShadow: validationErrors.name
+                        ? '0 0 10px rgba(255,77,79,0.5)'
+                        : 'none'
+                    }}
+                  />
 
-{/* ===== Added real-time name validation message ===== */}
+                  {/* ===== Added real-time name validation message ===== */}
 
-{validationErrors.name && (
-  <small style={{ color: '#ff4d4f' }}>
-    {validationErrors.name}
-  </small>
-)}
+                  {validationErrors.name && (
+                    <small style={{ color: '#ff4d4f' }}>
+                      {validationErrors.name}
+                    </small>
+                  )}
 
                 </Form.Group>
-
-                
 
                 {/* Email field */}
 
@@ -314,32 +364,32 @@ const [validationErrors, setValidationErrors] = useState({
                   </Form.Label>
 
                   <Form.Control
-  type="email"
-  name="email"
-  placeholder="Enter student email"
-  value={formData.email}
-  onChange={handleChange}
-  required
-  style={{
-    backgroundColor: '#16213e',
-    border: validationErrors.email
-      ? '1px solid #ff4d4f'
-      : '1px solid #0f3460',
-    color: '#fff',
-    transition: '0.3s',
-    boxShadow: validationErrors.email
-      ? '0 0 10px rgba(255,77,79,0.5)'
-      : 'none'
-  }}
-/>
+                    type="email"
+                    name="email"
+                    placeholder="Enter student email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    style={{
+                      backgroundColor: '#16213e',
+                      border: validationErrors.email
+                        ? '1px solid #ff4d4f'
+                        : '1px solid #0f3460',
+                      color: '#fff',
+                      transition: '0.3s',
+                      boxShadow: validationErrors.email
+                        ? '0 0 10px rgba(255,77,79,0.5)'
+                        : 'none'
+                    }}
+                  />
 
- {/* ===== Added real-time email validation message ===== */}
+                  {/* ===== Added real-time email validation message ===== */}
 
-{validationErrors.email && (
-  <small style={{ color: '#ff4d4f' }}>
-    {validationErrors.email}
-  </small>
-)}
+                  {validationErrors.email && (
+                    <small style={{ color: '#ff4d4f' }}>
+                      {validationErrors.email}
+                    </small>
+                  )}
 
                 </Form.Group>
 
@@ -352,34 +402,34 @@ const [validationErrors, setValidationErrors] = useState({
                   </Form.Label>
 
                   <Form.Control
-            type="number"
-          name="age"
-            placeholder="Enter student age"
-            value={formData.age}
-            onChange={handleChange}
-             required
-  min="1"
-  max="100"
-  style={{
-    backgroundColor: '#16213e',
-    border: validationErrors.age
-      ? '1px solid #ff4d4f'
-      : '1px solid #0f3460',
-    color: '#fff',
-    transition: '0.3s',
-    boxShadow: validationErrors.age
-      ? '0 0 10px rgba(255,77,79,0.5)'
-      : 'none'
-  }}
-/>
+                    type="number"
+                    name="age"
+                    placeholder="Enter student age"
+                    value={formData.age}
+                    onChange={handleChange}
+                    required
+                    min="1"
+                    max="100"
+                    style={{
+                      backgroundColor: '#16213e',
+                      border: validationErrors.age
+                        ? '1px solid #ff4d4f'
+                        : '1px solid #0f3460',
+                      color: '#fff',
+                      transition: '0.3s',
+                      boxShadow: validationErrors.age
+                        ? '0 0 10px rgba(255,77,79,0.5)'
+                        : 'none'
+                    }}
+                  />
 
-{/* ===== Added real-time age validation message ===== */}
+                  {/* ===== Added real-time age validation message ===== */}
 
-{validationErrors.age && (
-  <small style={{ color: '#ff4d4f' }}>
-    {validationErrors.age}
-  </small>
-)}
+                  {validationErrors.age && (
+                    <small style={{ color: '#ff4d4f' }}>
+                      {validationErrors.age}
+                    </small>
+                  )}
 
                 </Form.Group>
 
@@ -426,13 +476,13 @@ const [validationErrors, setValidationErrors] = useState({
                       className="w-100"
                       disabled={loading}
                       style={{
-                      backgroundColor: '#0f3460',
-                      border: 'none',
-                      padding: '10px',
-                      transition: '0.3s',
-                      fontWeight: '600',
-                      letterSpacing: '0.5px'
-                }}
+                        backgroundColor: '#0f3460',
+                        border: 'none',
+                        padding: '10px',
+                        transition: '0.3s',
+                        fontWeight: '600',
+                        letterSpacing: '0.5px'
+                      }}
                     >
 
                       {/* ===== Added loading spinner inside button ===== */}
@@ -465,12 +515,24 @@ const [validationErrors, setValidationErrors] = useState({
                       type="reset"
                       className="w-100"
                       style={{ padding: '10px' }}
-                      onClick={() => setFormData({
-                        name: '',
-                        email: '',
-                        age: '',
-                        gender: ''
-                      })}
+                      onClick={() => {
+
+                        // ===== Also clear validation errors on reset =====
+
+                        setFormData({
+                          name: '',
+                          email: '',
+                          age: '',
+                          gender: ''
+                        });
+
+                        setValidationErrors({
+                          name: '',
+                          email: '',
+                          age: ''
+                        });
+
+                      }}
                     >
                       🔄 Reset
                     </Button>
