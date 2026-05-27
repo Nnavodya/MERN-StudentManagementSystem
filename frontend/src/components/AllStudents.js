@@ -119,7 +119,10 @@ function AllStudents() {
 
       axios.delete(`http://localhost:5000/api/students/delete/${id}`)
         .then(() => {
-          alert('Student deleted successfully! ✅');
+          // ===== Professional Success Notification =====
+// Shows animated success popup after student deletion
+
+toast.success('Student deleted successfully! ✅');
 
           // remove the deleted student from state without refetching all data
           const updatedStudents = students.filter(student => student._id !== id);
