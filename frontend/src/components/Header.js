@@ -2,6 +2,7 @@ import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import { NavLink } from 'react-router-dom'; // NavLink highlights the active page automatically
 
 // Header component - Navigation bar for Student Management System
 function Header() {
@@ -10,8 +11,8 @@ function Header() {
     <Navbar expand="lg" variant="dark" style={{ backgroundColor: '#1a1a2e' }}>
       <Container>
 
-        {/* Brand/Logo */}
-        <Navbar.Brand href="/">
+        {/* Brand/Logo - NavLink used instead of href for React Router navigation */}
+        <Navbar.Brand as={NavLink} to="/">
           🎓 Student MS
         </Navbar.Brand>
 
@@ -22,14 +23,10 @@ function Header() {
         <Navbar.Collapse id="student-ms-navbar">
           <Nav className="ms-auto"> {/* ms-auto pushes links to the right */}
 
-            {/* Home link */}
-            <Nav.Link href="/">🏠 Home</Nav.Link>
-
-            {/* View all students link */}
-            <Nav.Link href="/students">👨‍🎓 Students</Nav.Link>
-
-            {/* Add new student link */}
-            <Nav.Link href="/add-student">➕ Add Student</Nav.Link>
+            {/* NavLink highlights the active page automatically */}
+            <Nav.Link as={NavLink} to="/">🏠 Home</Nav.Link>
+            <Nav.Link as={NavLink} to="/students">👨‍🎓 Students</Nav.Link>
+            <Nav.Link as={NavLink} to="/add-student">➕ Add Student</Nav.Link>
 
           </Nav>
         </Navbar.Collapse>
