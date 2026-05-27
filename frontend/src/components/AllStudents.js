@@ -102,6 +102,10 @@ function AllStudents() {
       .catch((err) => {
         // show error message if request fails
         setError('Error fetching students!');
+        // ===== Added fetch error toast =====
+// Shows popup notification if fetching students fails
+
+toast.error('Failed to fetch students!');
         setLoading(false);
         console.log(err);
       });
