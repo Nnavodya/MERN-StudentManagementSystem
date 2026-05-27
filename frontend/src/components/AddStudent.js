@@ -15,6 +15,12 @@ import {
 
 import axios from 'axios';
 
+// ===== Added React Toastify =====
+// Toastify is used to show professional popup notifications
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 // AddStudent component - Form to add a new student to the database
 function AddStudent() {
 
@@ -38,6 +44,7 @@ function AddStudent() {
 
   // handleChange is called every time the user types in a form field
   // it updates the formData state with the new value
+
   const handleChange = (e) => {
 
     setFormData({
@@ -57,34 +64,53 @@ function AddStudent() {
     // ===== Added input validation =====
 
     // remove extra spaces from inputs
+
     const trimmedName = formData.name.trim();
     const trimmedEmail = formData.email.trim();
 
     // validate name length
+
     if (trimmedName.length < 3) {
 
       setErrorMessage('Name must contain at least 3 characters ❌');
       setSuccessMessage('');
+
+      // ===== Added toast error message =====
+
+      toast.error('Name must contain at least 3 characters ❌');
+
       return;
 
     }
 
     // validate email format
+
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailPattern.test(trimmedEmail)) {
 
       setErrorMessage('Please enter a valid email address ❌');
       setSuccessMessage('');
+
+      // ===== Added toast error message =====
+
+      toast.error('Please enter a valid email address ❌');
+
       return;
 
     }
 
     // validate age range
+
     if (formData.age < 1 || formData.age > 100) {
 
       setErrorMessage('Age must be between 1 and 100 ❌');
       setSuccessMessage('');
+
+      // ===== Added toast error message =====
+
+      toast.error('Age must be between 1 and 100 ❌');
+
       return;
 
     }
@@ -107,6 +133,10 @@ function AddStudent() {
       setSuccessMessage('Student added successfully! ✅');
       setErrorMessage('');
 
+      // ===== Added success toast =====
+
+      toast.success('Student added successfully! ✅');
+
       // reset form fields after successful submission
 
       setFormData({
@@ -125,9 +155,17 @@ function AddStudent() {
 
         setErrorMessage('Email already exists ❌');
 
+        // ===== Added duplicate email toast =====
+
+        toast.error('Email already exists ❌');
+
       } else {
 
         setErrorMessage('Error adding student. Please try again! ❌');
+
+        // ===== Added general error toast =====
+
+        toast.error('Error adding student ❌');
 
       }
 
@@ -147,227 +185,240 @@ function AddStudent() {
 
   return (
 
-    <Container className="mt-5">
+    <>
 
-      <Row className="justify-content-center">
+      {/* ===== Added Toast Container ===== */}
+      {/* This component displays toast notifications */}
 
-        <Col md={6}>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        theme="dark"
+      />
 
-          {/* Form card */}
+      <Container className="mt-5">
 
-          <div style={{
-            backgroundColor: '#1a1a2e',
-            borderRadius: '15px',
-            padding: '40px',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.3)'
-          }}>
+        <Row className="justify-content-center">
 
-            {/* Form title */}
+          <Col md={6}>
 
-            <h2 style={{
-              color: '#fff',
-              textAlign: 'center',
-              marginBottom: '30px'
+            {/* Form card */}
+
+            <div style={{
+              backgroundColor: '#1a1a2e',
+              borderRadius: '15px',
+              padding: '40px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.3)'
             }}>
-              ➕ Add New Student
-            </h2>
 
-            {/* Success message - shows after successful form submission */}
+              {/* Form title */}
 
-            {successMessage && (
-              <Alert variant="success">
-                {successMessage}
-              </Alert>
-            )}
+              <h2 style={{
+                color: '#fff',
+                textAlign: 'center',
+                marginBottom: '30px'
+              }}>
+                ➕ Add New Student
+              </h2>
 
-            {/* Error message - shows if form submission fails */}
+              {/* Success message - shows after successful form submission */}
 
-            {errorMessage && (
-              <Alert variant="danger">
-                {errorMessage}
-              </Alert>
-            )}
+              {successMessage && (
+                <Alert variant="success">
+                  {successMessage}
+                </Alert>
+              )}
 
-            {/* Add Student Form */}
+              {/* Error message - shows if form submission fails */}
 
-            <Form onSubmit={handleSubmit}>
+              {errorMessage && (
+                <Alert variant="danger">
+                  {errorMessage}
+                </Alert>
+              )}
 
-              {/* Name field */}
+              {/* Add Student Form */}
 
-              <Form.Group className="mb-3">
+              <Form onSubmit={handleSubmit}>
 
-                <Form.Label style={{ color: '#ccc' }}>
-                  👤 Full Name
-                </Form.Label>
+                {/* Name field */}
 
-                <Form.Control
-                  type="text"
-                  name="name" // name matches formData key
-                  placeholder="Enter student full name"
-                  value={formData.name} // value is controlled by formData state
-                  onChange={handleChange} // update state on change
-                  required // field is required
-                  style={{
-                    backgroundColor: '#16213e',
-                    border: '1px solid #0f3460',
-                    color: '#fff'
-                  }}
-                />
+                <Form.Group className="mb-3">
 
-              </Form.Group>
+                  <Form.Label style={{ color: '#ccc' }}>
+                    👤 Full Name
+                  </Form.Label>
 
-              {/* Email field */}
-
-              <Form.Group className="mb-3">
-
-                <Form.Label style={{ color: '#ccc' }}>
-                  📧 Email Address
-                </Form.Label>
-
-                <Form.Control
-                  type="email"
-                  name="email"
-                  placeholder="Enter student email"
-                  value={formData.email} // value is controlled by formData state
-                  onChange={handleChange} // update state on change
-                  required
-                  style={{
-                    backgroundColor: '#16213e',
-                    border: '1px solid #0f3460',
-                    color: '#fff'
-                  }}
-                />
-
-              </Form.Group>
-
-              {/* Age field */}
-
-              <Form.Group className="mb-3">
-
-                <Form.Label style={{ color: '#ccc' }}>
-                  🎂 Age
-                </Form.Label>
-
-                <Form.Control
-                  type="number"
-                  name="age"
-                  placeholder="Enter student age"
-                  value={formData.age} // value is controlled by formData state
-                  onChange={handleChange} // update state on change
-                  required
-                  min="1" // minimum age value
-                  max="100" // maximum age value
-                  style={{
-                    backgroundColor: '#16213e',
-                    border: '1px solid #0f3460',
-                    color: '#fff'
-                  }}
-                />
-
-              </Form.Group>
-
-              {/* Gender field - dropdown select */}
-
-              <Form.Group className="mb-4">
-
-                <Form.Label style={{ color: '#ccc' }}>
-                  ⚥ Gender
-                </Form.Label>
-
-                <Form.Select
-                  name="gender"
-                  value={formData.gender} // value is controlled by formData state
-                  onChange={handleChange} // update state on change
-                  required
-                  style={{
-                    backgroundColor: '#16213e',
-                    border: '1px solid #0f3460',
-                    color: '#fff'
-                  }}
-                >
-
-                  <option value="">Select gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-
-                </Form.Select>
-
-              </Form.Group>
-
-              {/* Submit and Reset buttons */}
-
-              <Row>
-
-                <Col>
-
-                  {/* Submit button - sends form data to backend */}
-
-                  <Button
-                    variant="primary"
-                    type="submit"
-                    className="w-100"
-                    disabled={loading}
+                  <Form.Control
+                    type="text"
+                    name="name"
+                    placeholder="Enter student full name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
                     style={{
-                      backgroundColor: '#0f3460',
-                      border: 'none',
-                      padding: '10px'
+                      backgroundColor: '#16213e',
+                      border: '1px solid #0f3460',
+                      color: '#fff'
+                    }}
+                  />
+
+                </Form.Group>
+
+                {/* Email field */}
+
+                <Form.Group className="mb-3">
+
+                  <Form.Label style={{ color: '#ccc' }}>
+                    📧 Email Address
+                  </Form.Label>
+
+                  <Form.Control
+                    type="email"
+                    name="email"
+                    placeholder="Enter student email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    style={{
+                      backgroundColor: '#16213e',
+                      border: '1px solid #0f3460',
+                      color: '#fff'
+                    }}
+                  />
+
+                </Form.Group>
+
+                {/* Age field */}
+
+                <Form.Group className="mb-3">
+
+                  <Form.Label style={{ color: '#ccc' }}>
+                    🎂 Age
+                  </Form.Label>
+
+                  <Form.Control
+                    type="number"
+                    name="age"
+                    placeholder="Enter student age"
+                    value={formData.age}
+                    onChange={handleChange}
+                    required
+                    min="1"
+                    max="100"
+                    style={{
+                      backgroundColor: '#16213e',
+                      border: '1px solid #0f3460',
+                      color: '#fff'
+                    }}
+                  />
+
+                </Form.Group>
+
+                {/* Gender field - dropdown select */}
+
+                <Form.Group className="mb-4">
+
+                  <Form.Label style={{ color: '#ccc' }}>
+                    ⚥ Gender
+                  </Form.Label>
+
+                  <Form.Select
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleChange}
+                    required
+                    style={{
+                      backgroundColor: '#16213e',
+                      border: '1px solid #0f3460',
+                      color: '#fff'
                     }}
                   >
 
-                    {/* ===== Added loading spinner inside button ===== */}
+                    <option value="">Select gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
 
-                    {loading ? (
-                      <>
-                        <Spinner
-                          as="span"
-                          animation="border"
-                          size="sm"
-                          role="status"
-                          aria-hidden="true"
-                        />
-                        {' '}Adding Student...
-                      </>
-                    ) : (
-                      '➕ Add Student'
-                    )}
+                  </Form.Select>
 
-                  </Button>
+                </Form.Group>
 
-                </Col>
+                {/* Submit and Reset buttons */}
 
-                <Col>
+                <Row>
 
-                  {/* Reset button - clears all form fields */}
+                  <Col>
 
-                  <Button
-                    variant="outline-secondary"
-                    type="reset"
-                    className="w-100"
-                    style={{ padding: '10px' }}
-                    onClick={() => setFormData({
-                      name: '',
-                      email: '',
-                      age: '',
-                      gender: ''
-                    })}
-                  >
-                    🔄 Reset
-                  </Button>
+                    {/* Submit button - sends form data to backend */}
 
-                </Col>
+                    <Button
+                      variant="primary"
+                      type="submit"
+                      className="w-100"
+                      disabled={loading}
+                      style={{
+                        backgroundColor: '#0f3460',
+                        border: 'none',
+                        padding: '10px'
+                      }}
+                    >
 
-              </Row>
+                      {/* ===== Added loading spinner inside button ===== */}
 
-            </Form>
+                      {loading ? (
+                        <>
+                          <Spinner
+                            as="span"
+                            animation="border"
+                            size="sm"
+                            role="status"
+                            aria-hidden="true"
+                          />
+                          {' '}Adding Student...
+                        </>
+                      ) : (
+                        '➕ Add Student'
+                      )}
 
-          </div>
+                    </Button>
 
-        </Col>
+                  </Col>
 
-      </Row>
+                  <Col>
 
-    </Container>
+                    {/* Reset button - clears all form fields */}
+
+                    <Button
+                      variant="outline-secondary"
+                      type="reset"
+                      className="w-100"
+                      style={{ padding: '10px' }}
+                      onClick={() => setFormData({
+                        name: '',
+                        email: '',
+                        age: '',
+                        gender: ''
+                      })}
+                    >
+                      🔄 Reset
+                    </Button>
+
+                  </Col>
+
+                </Row>
+
+              </Form>
+
+            </div>
+
+          </Col>
+
+        </Row>
+
+      </Container>
+
+    </>
 
   );
 
