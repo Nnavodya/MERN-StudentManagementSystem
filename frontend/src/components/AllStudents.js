@@ -290,12 +290,23 @@ function AllStudents() {
       <Row className="mb-3">
         <Col md={4}>
           {/* Search input — triggers filter on every keystroke via onChange */}
-          <Form.Control
-            type="text"
-            placeholder="🔍 Search by name, email or gender..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+          {/* ===== Modern Search Input ===== */}
+{/* Styled search bar with shadow and rounded corners */}
+
+<Form.Control
+  type="text"
+  placeholder="🔍 Search by name, email or gender..."
+  value={searchTerm}
+  onChange={(e) => setSearchTerm(e.target.value)}
+
+  style={{
+    borderRadius: '12px',
+    padding: '12px',
+    border: '1px solid #dcdcdc',
+    boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+    transition: '0.3s'
+  }}
+/>
         </Col>
         <Col>
           {/* Show how many students match the current search */}
