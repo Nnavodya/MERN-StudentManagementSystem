@@ -89,6 +89,18 @@ setFemaleStudents(femaleCount);
   return (
     <Container className="mt-5">
 
+      {/* ===== Added dashboard title ===== */}
+
+<h2
+  style={{
+    fontWeight: 'bold',
+    marginBottom: '25px',
+    color: '#1a1a2e'
+  }}
+>
+  📊 Student Dashboard
+</h2>
+
       {/* Title and Add button */}
       <Row className="mb-4 align-items-center">
         <Col>
