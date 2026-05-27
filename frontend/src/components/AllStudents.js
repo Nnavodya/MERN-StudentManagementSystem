@@ -158,4 +158,4 @@ function AllStudents() {
   );
 }
 
-export default AllStudents; // Exporting the AllStudents component for use in other parts of the app
+export default AllStudents; // Exporting the AllStudents component for use in other parts of the app, such as App.js where it is displayed on the home page and students page.

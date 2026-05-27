@@ -45,14 +45,22 @@ function AddStudent() {
   // handleChange is called every time the user types in a form field
   // it updates the formData state with the new value
 
-  const handleChange = (e) => {
+  // handleChange is called every time the user types in a form field
+// it updates the formData state with the new value
 
-    setFormData({
-      ...formData, // keep existing form data
-      [e.target.name]: e.target.value // update only the changed field
-    });
+const handleChange = (e) => {
 
-  };
+  // ===== Added real-time validation support =====
+  // Updates form data instantly while typing
+
+  const { name, value } = e.target;
+
+  setFormData({
+    ...formData,
+    [name]: value
+  });
+
+};
 
   // handleSubmit is called when the user clicks the submit button
   // it sends the form data to the backend API
