@@ -426,10 +426,13 @@ const [validationErrors, setValidationErrors] = useState({
                       className="w-100"
                       disabled={loading}
                       style={{
-                        backgroundColor: '#0f3460',
-                        border: 'none',
-                        padding: '10px'
-                      }}
+                      backgroundColor: '#0f3460',
+                      border: 'none',
+                      padding: '10px',
+                      transition: '0.3s',
+                      fontWeight: '600',
+                      letterSpacing: '0.5px'
+                }}
                     >
 
                       {/* ===== Added loading spinner inside button ===== */}
