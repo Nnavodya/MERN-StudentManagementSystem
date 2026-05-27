@@ -3,6 +3,7 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // importing React Router for navigation between pages
 import Header from './components/Header'; //importing Header component from the components folder. We can use this component in our App component to display the header of our application. This will allow us to reuse the header component in different parts of our application without having to write the same code again. We can simply import the Header component and use it wherever we want to display the header in our application.
 import AddStudent from './components/AddStudent'; // importing AddStudent component to use in the route for adding a new student
+import AllStudents from './components/AllStudents'; // importing AllStudents component to display all students list
 import 'bootstrap/dist/css/bootstrap.min.css'; //importing bootstrap css file to use bootstrap classes in our components. This will allow us to use bootstrap classes in our components to style them easily without writing custom CSS. We can use bootstrap classes like btn, btn-primary, container, row, col, etc. in our components to style them according to our needs. This will save us time and effort in writing custom CSS for styling our components.
 
 function App() {
@@ -15,6 +16,12 @@ function App() {
 
         {/* Routes define which component to show for each URL path */}
         <Routes>
+          {/* Home page - shows all students by default */}
+          <Route path="/" element={<AllStudents />} />
+
+          {/* Route for viewing all students */}
+          <Route path="/students" element={<AllStudents />} />
+
           {/* Route for adding a new student */}
           <Route path="/add-student" element={<AddStudent />} />
         </Routes>
