@@ -2,6 +2,7 @@ import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import Link from 'react-router-dom/Link'; // Importing Link component for client-side navigation
 
 // Header component - Navigation bar for Student Management System
 function Header() {
