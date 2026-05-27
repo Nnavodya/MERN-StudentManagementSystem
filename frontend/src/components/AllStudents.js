@@ -101,6 +101,91 @@ setFemaleStudents(femaleCount);
   📊 Student Dashboard
 </h2>
 
+{/* ===== Added dashboard statistics cards ===== */}
+{/* Displays total, male and female student counts */}
+
+<Row className="mb-4">
+
+  {/* Total Students Card */}
+
+  <Col md={4} className="mb-3">
+
+    <div
+      style={{
+        background: 'linear-gradient(135deg, #4e54c8, #8f94fb)',
+        borderRadius: '15px',
+        padding: '25px',
+        color: '#fff',
+        boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+        transition: '0.3s',
+        cursor: 'pointer'
+      }}
+    >
+
+      <h5>📚 Total Students</h5>
+
+      <h2 style={{ fontWeight: 'bold' }}>
+        {totalStudents}
+      </h2>
+
+    </div>
+
+  </Col>
+
+  {/* Male Students Card */}
+
+  <Col md={4} className="mb-3">
+
+    <div
+      style={{
+        background: 'linear-gradient(135deg, #11998e, #38ef7d)',
+        borderRadius: '15px',
+        padding: '25px',
+        color: '#fff',
+        boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+        transition: '0.3s',
+        cursor: 'pointer'
+      }}
+    >
+
+      <h5>👨 Male Students</h5>
+
+      <h2 style={{ fontWeight: 'bold' }}>
+        {maleStudents}
+      </h2>
+
+    </div>
+
+  </Col>
+
+  {/* Female Students Card */}
+
+  <Col md={4} className="mb-3">
+
+    <div
+      style={{
+        background: 'linear-gradient(135deg, #fc466b, #3f5efb)',
+        borderRadius: '15px',
+        padding: '25px',
+        color: '#fff',
+        boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+        transition: '0.3s',
+        cursor: 'pointer'
+      }}
+    >
+
+      <h5>👩 Female Students</h5>
+
+      <h2 style={{ fontWeight: 'bold' }}>
+        {femaleStudents}
+      </h2>
+
+    </div>
+
+  </Col>
+
+</Row>
+
       {/* Title and Add button */}
       <Row className="mb-4 align-items-center">
         <Col>
