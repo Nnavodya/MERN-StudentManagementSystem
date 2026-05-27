@@ -18,6 +18,13 @@ function AllStudents() {
   // state to store search term entered by user
   const [searchTerm, setSearchTerm] = useState('');
 
+  // ===== Added dashboard statistics states =====
+// These states store student statistics for dashboard cards
+
+const [totalStudents, setTotalStudents] = useState(0);
+const [maleStudents, setMaleStudents] = useState(0);
+const [femaleStudents, setFemaleStudents] = useState(0);
+
   // useNavigate hook - redirects to update page when edit button clicked
   const navigate = useNavigate();
 
