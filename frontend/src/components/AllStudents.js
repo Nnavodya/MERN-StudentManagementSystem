@@ -337,7 +337,38 @@ function AllStudents() {
 
               // show message if no students match the search
               <tr>
-                <td colSpan="6" className="text-center">No students found! 😕</td>
+                <td colSpan="6" className="text-center">
+
+  {/* ===== Empty State UI ===== */}
+  {/* Displays when no students match search results */}
+
+  <div
+    style={{
+      padding: '30px'
+    }}
+  >
+
+    {/* Empty state icon */}
+
+    <h1 style={{ fontSize: '60px' }}>
+      📭
+    </h1>
+
+    {/* Empty state title */}
+
+    <h4 style={{ color: '#1a1a2e' }}>
+      No Students Found
+    </h4>
+
+    {/* Empty state description */}
+
+    <p style={{ color: '#777' }}>
+      Try changing the search keyword or add a new student.
+    </p>
+
+  </div>
+
+</td>
               </tr>
             ) : (
 
