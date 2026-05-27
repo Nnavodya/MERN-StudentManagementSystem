@@ -374,7 +374,24 @@ function AllStudents() {
 
                 // map over filtered students and render a row for each
                 filteredStudents.map((student, index) => (
-                  <tr key={student._id}>
+                  <tr
+  key={student._id}
+
+  // ===== Row Hover Animation =====
+  // Slightly lifts row for modern UI feel
+
+  style={{
+    transition: '0.2s'
+  }}
+
+  onMouseEnter={(e) => {
+    e.currentTarget.style.transform = 'scale(1.01)';
+  }}
+
+  onMouseLeave={(e) => {
+    e.currentTarget.style.transform = 'scale(1)';
+  }}
+>
 
                     {/* Row number — starts from 1 */}
                     <td>{index + 1}</td>
