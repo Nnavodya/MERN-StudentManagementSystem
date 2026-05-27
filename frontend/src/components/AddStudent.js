@@ -293,7 +293,17 @@ const [validationErrors, setValidationErrors] = useState({
   }}
 />
 
+{/* ===== Added real-time name validation message ===== */}
+
+{validationErrors.name && (
+  <small style={{ color: '#ff4d4f' }}>
+    {validationErrors.name}
+  </small>
+)}
+
                 </Form.Group>
+
+                
 
                 {/* Email field */}
 
