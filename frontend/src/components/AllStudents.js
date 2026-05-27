@@ -149,8 +149,10 @@ toast.success('Student deleted successfully! ✅');
           setFemaleStudents(femaleCount);
         })
         .catch((err) => {
-          // show error if delete request fails
-          alert('Error deleting student! ❌');
+          // ===== Professional Error Notification =====
+// Shows animated error popup if delete fails
+
+toast.error('Error deleting student! ❌');
           console.log(err);
         });
     }
