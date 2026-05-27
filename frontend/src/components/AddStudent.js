@@ -56,9 +56,13 @@ const handleChange = (e) => {
   const { name, value } = e.target;
 
   setFormData({
-    ...formData,
-    [name]: value
-  });
+  ...formData,
+  [name]: value
+});
+
+// ===== Added real-time validation call =====
+
+validateField(name, value);
 
 };
 
