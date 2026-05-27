@@ -9,7 +9,7 @@ function UpdateStudent() {
   // useParams gets :id from URL — e.g /update-student/abc123 → id = abc123
   const { id } = useParams();
 
-  // useNavigate redirects to another page after update
+  // useNavigate redirects to students page after successful update
   const navigate = useNavigate();
 
   // state to store form data pre-filled with existing student data
@@ -28,7 +28,7 @@ function UpdateStudent() {
   useEffect(() => {
     axios.get(`http://localhost:5000/students/get/${id}`)
       .then((res) => {
-        // pre-fill form with existing student data
+        // pre-fill form with existing student data from database
         setFormData({
           name: res.data.student.name,
           email: res.data.student.email,
@@ -40,14 +40,34 @@ function UpdateStudent() {
         setErrorMessage('Error fetching student data! ❌');
         console.log(err);
       });
-  }, [id]);
+  }, [id]); // dependency array — re-runs if id in URL changes
 
-  // handleChange updates formData state when user edits fields
+  // handleChange updates formData when user edits any field
   const handleChange = (e) => {
     setFormData({
-      ...formData, // keep existing data unchanged
+      ...formData, // spread keeps existing data
       [e.target.name]: e.target.value // update only changed field
     });
+  };
+
+  // handleSubmit sends PUT request to backend to update student
+  const handleSubmit = (e) => {
+    e.preventDefault(); // prevent page reload
+
+    axios.put(`http://localhost:5000/students/update/${id}`, formData)
+      .then(() => {
+        setSuccessMessage('Student updated successfully! ✅');
+        setErrorMessage('');
+        // redirect to students list after 1.5 seconds
+        setTimeout(() => {
+          navigate('/students');
+        }, 1500);
+      })
+      .catch((err) => {
+        setErrorMessage('Error updating student. Please try again! ❌');
+        setSuccessMessage('');
+        console.log(err);
+      });
   };
 
   return (
@@ -64,43 +84,51 @@ function UpdateStudent() {
               ✏️ Update Student
             </h2>
 
+            {/* Success message - shows after successful update */}
             {successMessage && <Alert variant="success">{successMessage}</Alert>}
+
+            {/* Error message - shows if update fails */}
             {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
 
-            <Form>
-              {/* Name field - pre-filled */}
+            {/* Update Form - onSubmit calls handleSubmit */}
+            <Form onSubmit={handleSubmit}>
+
+              {/* Name field - pre-filled with existing student name */}
               <Form.Group className="mb-3">
                 <Form.Label style={{ color: '#ccc' }}>👤 Full Name</Form.Label>
                 <Form.Control
                   type="text"
                   name="name"
-                  value={formData.name}
+                  placeholder="Enter student full name"
+                  value={formData.name} // pre-filled with existing data
                   onChange={handleChange}
                   required
                   style={{ backgroundColor: '#16213e', border: '1px solid #0f3460', color: '#fff' }}
                 />
               </Form.Group>
 
-              {/* Email field - pre-filled */}
+              {/* Email field - pre-filled with existing student email */}
               <Form.Group className="mb-3">
-                <Form.Label style={{ color: '#ccc' }}>📧 Email</Form.Label>
+                <Form.Label style={{ color: '#ccc' }}>📧 Email Address</Form.Label>
                 <Form.Control
                   type="email"
                   name="email"
-                  value={formData.email}
+                  placeholder="Enter student email"
+                  value={formData.email} // pre-filled with existing data
                   onChange={handleChange}
                   required
                   style={{ backgroundColor: '#16213e', border: '1px solid #0f3460', color: '#fff' }}
                 />
               </Form.Group>
 
-              {/* Age field - pre-filled */}
+              {/* Age field - pre-filled with existing student age */}
               <Form.Group className="mb-3">
                 <Form.Label style={{ color: '#ccc' }}>🎂 Age</Form.Label>
                 <Form.Control
                   type="number"
                   name="age"
-                  value={formData.age}
+                  placeholder="Enter student age"
+                  value={formData.age} // pre-filled with existing data
                   onChange={handleChange}
                   required
                   min="1"
@@ -109,12 +137,12 @@ function UpdateStudent() {
                 />
               </Form.Group>
 
-              {/* Gender field - pre-filled */}
+              {/* Gender field - pre-filled with existing student gender */}
               <Form.Group className="mb-4">
                 <Form.Label style={{ color: '#ccc' }}>⚥ Gender</Form.Label>
                 <Form.Select
                   name="gender"
-                  value={formData.gender}
+                  value={formData.gender} // pre-filled with existing data
                   onChange={handleChange}
                   required
                   style={{ backgroundColor: '#16213e', border: '1px solid #0f3460', color: '#fff' }}
@@ -126,16 +154,17 @@ function UpdateStudent() {
                 </Form.Select>
               </Form.Group>
 
-              {/* Buttons */}
+              {/* Update and Cancel buttons */}
               <Row>
                 <Col>
+                  {/* Submit button - triggers handleSubmit */}
                   <Button variant="primary" type="submit" className="w-100"
                     style={{ backgroundColor: '#0f3460', border: 'none', padding: '10px' }}>
                     ✏️ Update Student
                   </Button>
                 </Col>
                 <Col>
-                  {/* Cancel - goes back without saving */}
+                  {/* Cancel button - navigates back without saving */}
                   <Button variant="outline-secondary" className="w-100"
                     style={{ padding: '10px' }}
                     onClick={() => navigate('/students')}>
@@ -143,6 +172,7 @@ function UpdateStudent() {
                   </Button>
                 </Col>
               </Row>
+
             </Form>
           </div>
         </Col>
