@@ -1,5 +1,18 @@
 import React, { useState } from 'react';
-import { Container, Form, Button, Row, Col, Alert } from 'react-bootstrap';
+
+// ===== Added Spinner component =====
+// Spinner is used to show loading animation while form is submitting
+
+import {
+  Container,
+  Form,
+  Button,
+  Row,
+  Col,
+  Alert,
+  Spinner
+} from 'react-bootstrap';
+
 import axios from 'axios';
 
 // AddStudent component - Form to add a new student to the database
@@ -17,42 +30,131 @@ function AddStudent() {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
+  // ===== Added loading state =====
+  // This state is used to disable the submit button
+  // and show loading spinner while data is being sent to backend
+
+  const [loading, setLoading] = useState(false);
+
   // handleChange is called every time the user types in a form field
   // it updates the formData state with the new value
   const handleChange = (e) => {
+
     setFormData({
       ...formData, // keep existing form data
       [e.target.name]: e.target.value // update only the changed field
     });
+
   };
 
   // handleSubmit is called when the user clicks the submit button
   // it sends the form data to the backend API
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
+
     e.preventDefault(); // prevent page reload on form submit
 
-    // sending POST request to backend to add new student
-    axios.post('http://localhost:5000/students/add', formData)
-      .then((res) => {
-        alert("Student added successfully! ✅"); // show success alert
-        setSuccessMessage('Student added successfully! ✅'); // show success message
-        setErrorMessage(''); // clear error message
-        // reset form fields after successful submission
-        setFormData({ name: '', email: '', age: '', gender: '' });
-      })
-      .catch((err) => {
-        setErrorMessage('Error adding student. Please try again! ❌'); // show error message
-        setSuccessMessage(''); // clear success message
-        console.log(err);
+    // ===== Added input validation =====
+
+    // remove extra spaces from inputs
+    const trimmedName = formData.name.trim();
+    const trimmedEmail = formData.email.trim();
+
+    // validate name length
+    if (trimmedName.length < 3) {
+
+      setErrorMessage('Name must contain at least 3 characters ❌');
+      setSuccessMessage('');
+      return;
+
+    }
+
+    // validate email format
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(trimmedEmail)) {
+
+      setErrorMessage('Please enter a valid email address ❌');
+      setSuccessMessage('');
+      return;
+
+    }
+
+    // validate age range
+    if (formData.age < 1 || formData.age > 100) {
+
+      setErrorMessage('Age must be between 1 and 100 ❌');
+      setSuccessMessage('');
+      return;
+
+    }
+
+    // ===== Added loading state =====
+
+    setLoading(true);
+
+    try {
+
+      // sending POST request to backend to add new student
+
+      const res = await axios.post(
+        'http://localhost:5000/students/add',
+        formData
+      );
+
+      // success message after adding student
+
+      setSuccessMessage('Student added successfully! ✅');
+      setErrorMessage('');
+
+      // reset form fields after successful submission
+
+      setFormData({
+        name: '',
+        email: '',
+        age: '',
+        gender: ''
       });
+
+    } catch (err) {
+
+      // ===== Added duplicate email handling =====
+      // Shows proper message if email already exists
+
+      if (err.response?.data?.error?.includes('duplicate')) {
+
+        setErrorMessage('Email already exists ❌');
+
+      } else {
+
+        setErrorMessage('Error adding student. Please try again! ❌');
+
+      }
+
+      setSuccessMessage('');
+
+      console.log(err);
+
+    } finally {
+
+      // stop loading spinner
+
+      setLoading(false);
+
+    }
+
   };
 
   return (
+
     <Container className="mt-5">
+
       <Row className="justify-content-center">
+
         <Col md={6}>
 
           {/* Form card */}
+
           <div style={{
             backgroundColor: '#1a1a2e',
             borderRadius: '15px',
@@ -61,28 +163,43 @@ function AddStudent() {
           }}>
 
             {/* Form title */}
-            <h2 style={{ color: '#fff', textAlign: 'center', marginBottom: '30px' }}>
+
+            <h2 style={{
+              color: '#fff',
+              textAlign: 'center',
+              marginBottom: '30px'
+            }}>
               ➕ Add New Student
             </h2>
 
             {/* Success message - shows after successful form submission */}
+
             {successMessage && (
-              <Alert variant="success">{successMessage}</Alert>
+              <Alert variant="success">
+                {successMessage}
+              </Alert>
             )}
 
             {/* Error message - shows if form submission fails */}
+
             {errorMessage && (
-              <Alert variant="danger">{errorMessage}</Alert>
+              <Alert variant="danger">
+                {errorMessage}
+              </Alert>
             )}
 
             {/* Add Student Form */}
+
             <Form onSubmit={handleSubmit}>
 
               {/* Name field */}
+
               <Form.Group className="mb-3">
+
                 <Form.Label style={{ color: '#ccc' }}>
                   👤 Full Name
                 </Form.Label>
+
                 <Form.Control
                   type="text"
                   name="name" // name matches formData key
@@ -96,13 +213,17 @@ function AddStudent() {
                     color: '#fff'
                   }}
                 />
+
               </Form.Group>
 
               {/* Email field */}
+
               <Form.Group className="mb-3">
+
                 <Form.Label style={{ color: '#ccc' }}>
                   📧 Email Address
                 </Form.Label>
+
                 <Form.Control
                   type="email"
                   name="email"
@@ -116,13 +237,17 @@ function AddStudent() {
                     color: '#fff'
                   }}
                 />
+
               </Form.Group>
 
               {/* Age field */}
+
               <Form.Group className="mb-3">
+
                 <Form.Label style={{ color: '#ccc' }}>
                   🎂 Age
                 </Form.Label>
+
                 <Form.Control
                   type="number"
                   name="age"
@@ -138,13 +263,17 @@ function AddStudent() {
                     color: '#fff'
                   }}
                 />
+
               </Form.Group>
 
               {/* Gender field - dropdown select */}
+
               <Form.Group className="mb-4">
+
                 <Form.Label style={{ color: '#ccc' }}>
                   ⚥ Gender
                 </Form.Label>
+
                 <Form.Select
                   name="gender"
                   value={formData.gender} // value is controlled by formData state
@@ -156,32 +285,61 @@ function AddStudent() {
                     color: '#fff'
                   }}
                 >
+
                   <option value="">Select gender</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
                   <option value="Other">Other</option>
+
                 </Form.Select>
+
               </Form.Group>
 
               {/* Submit and Reset buttons */}
+
               <Row>
+
                 <Col>
+
                   {/* Submit button - sends form data to backend */}
+
                   <Button
                     variant="primary"
                     type="submit"
                     className="w-100"
+                    disabled={loading}
                     style={{
                       backgroundColor: '#0f3460',
                       border: 'none',
                       padding: '10px'
                     }}
                   >
-                    ➕ Add Student
+
+                    {/* ===== Added loading spinner inside button ===== */}
+
+                    {loading ? (
+                      <>
+                        <Spinner
+                          as="span"
+                          animation="border"
+                          size="sm"
+                          role="status"
+                          aria-hidden="true"
+                        />
+                        {' '}Adding Student...
+                      </>
+                    ) : (
+                      '➕ Add Student'
+                    )}
+
                   </Button>
+
                 </Col>
+
                 <Col>
+
                   {/* Reset button - clears all form fields */}
+
                   <Button
                     variant="outline-secondary"
                     type="reset"
@@ -196,15 +354,23 @@ function AddStudent() {
                   >
                     🔄 Reset
                   </Button>
+
                 </Col>
+
               </Row>
 
             </Form>
+
           </div>
+
         </Col>
+
       </Row>
+
     </Container>
+
   );
+
 }
 
 export default AddStudent; // exporting AddStudent component for use in App.js
