@@ -10,12 +10,12 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
-app.use(express.json()); // FIXED (replaces body-parser)
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const URL = process.env.MONGODB_URL;
 
-// MongoDB connection - removed deprecated useNewUrlParser and useUnifiedTopology options as they are not supported in newer versions of mongoose
+// MongoDB connection
 mongoose.connect(URL)
   .then(() => {
     console.log('MongoDB connection established successfully!');
@@ -27,7 +27,10 @@ mongoose.connect(URL)
 
 // Routes
 const studentRouter = require('./routes/Students.js');
-app.use("/students", studentRouter); // Fixed: changed from /api/students to /students to match frontend axios calls
+const authRouter = require('./routes/auth.js');
+
+app.use("/students", studentRouter);
+app.use("/api/auth", authRouter); // Auth routes: /api/auth/login and /api/auth/register
 
 // Start server
 app.listen(PORT, () => {
