@@ -1,32 +1,65 @@
+// Header.js — Navigation bar with logout support
+
 import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import { NavLink } from 'react-router-dom'; // NavLink highlights the active page automatically
+import { NavLink, useNavigate } from 'react-router-dom';
 
-// Header component - Navigation bar for Student Management System
 function Header() {
+  const navigate = useNavigate();
+
+  const token = localStorage.getItem('token');
+  const username = localStorage.getItem('username');
+
+  // Remove token and username from localStorage and redirect to login
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    navigate('/login');
+  };
+
   return (
-    // dark variant navbar with dark background color
     <Navbar expand="lg" variant="dark" style={{ backgroundColor: '#1a1a2e' }}>
       <Container>
 
-        {/* Brand/Logo - NavLink used instead of href for React Router navigation */}
         <Navbar.Brand as={NavLink} to="/">
           🎓 Student MS
         </Navbar.Brand>
 
-        {/* Toggle button for mobile view - shows hamburger menu on small screens */}
         <Navbar.Toggle aria-controls="student-ms-navbar" />
 
-        {/* Collapsible nav links - collapses on small screens */}
         <Navbar.Collapse id="student-ms-navbar">
-          <Nav className="ms-auto"> {/* ms-auto pushes links to the right */}
+          <Nav className="ms-auto">
 
-            {/* NavLink highlights the active page automatically */}
-            <Nav.Link as={NavLink} to="/">🏠 Home</Nav.Link>
-            <Nav.Link as={NavLink} to="/students">👨‍🎓 Students</Nav.Link>
-            <Nav.Link as={NavLink} to="/add-student">➕ Add Student</Nav.Link>
+            {token ? (
+              // Show nav links only when logged in
+              <>
+                <Nav.Link as={NavLink} to="/">🏠 Home</Nav.Link>
+                <Nav.Link as={NavLink} to="/students">👨‍🎓 Students</Nav.Link>
+                <Nav.Link as={NavLink} to="/add-student">➕ Add Student</Nav.Link>
+
+                {/* Show logged in username */}
+                <Nav.Link disabled style={{ color: '#a0aec0' }}>
+                  👤 {username}
+                </Nav.Link>
+
+                {/* Logout button */}
+                <Nav.Link
+                  onClick={handleLogout}
+                  style={{
+                    color: '#fc466b',
+                    fontWeight: 'bold',
+                    cursor: 'pointer'
+                  }}
+                >
+                  🚪 Logout
+                </Nav.Link>
+              </>
+            ) : (
+              // Show Login link only when not logged in
+              <Nav.Link as={NavLink} to="/login">🔐 Login</Nav.Link>
+            )}
 
           </Nav>
         </Navbar.Collapse>
@@ -36,4 +69,4 @@ function Header() {
   );
 }
 
-export default Header; // exporting Header component for use in App.js
+export default Header;
