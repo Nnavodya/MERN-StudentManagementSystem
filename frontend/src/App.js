@@ -1,3 +1,5 @@
+// App.js — Main app with protected routes using PrivateRoute
+
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
@@ -5,27 +7,29 @@ import Home from './components/Home';
 import AddStudent from './components/AddStudent';
 import AllStudents from './components/AllStudents';
 import UpdateStudent from './components/UpdateStudent';
+import Login from './components/Login';
+import Register from './components/Register';
+import PrivateRoute from './components/PrivateRoute';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   return (
     <Router>
       <div>
-        {/* Header appears on every page */}
         <Header />
 
         <Routes>
-          {/* Home page - welcome landing page */}
-          <Route path="/" element={<Home />} />
 
-          {/* Students page - shows all students table */}
-          <Route path="/students" element={<AllStudents />} />
+          {/* Public routes — accessible without login */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-          {/* Add new student */}
-          <Route path="/add-student" element={<AddStudent />} />
+          {/* Protected routes — redirect to /login if not authenticated */}
+          <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
+          <Route path="/students" element={<PrivateRoute><AllStudents /></PrivateRoute>} />
+          <Route path="/add-student" element={<PrivateRoute><AddStudent /></PrivateRoute>} />
+          <Route path="/update-student/:id" element={<PrivateRoute><UpdateStudent /></PrivateRoute>} />
 
-          {/* Update student - :id is MongoDB document id */}
-          <Route path="/update-student/:id" element={<UpdateStudent />} />
         </Routes>
       </div>
     </Router>
