@@ -29,7 +29,7 @@ mongoose.connect(URL)
 const studentRouter = require('./routes/Students.js');
 const authRouter = require('./routes/auth.js');
 
-app.use("/students", studentRouter);
+app.use("/api/students", studentRouter);
 app.use("/api/auth", authRouter); // Auth routes: /api/auth/login and /api/auth/register
 
 // Start server

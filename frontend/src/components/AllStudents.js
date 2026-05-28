@@ -32,8 +32,9 @@ function AllStudents() {
       .then((res) => {
         setStudents(res.data);
         setTotalStudents(res.data.length);
-        setMaleStudents(res.data.filter((s) => s.gender === 'Male').length);
-        setFemaleStudents(res.data.filter((s) => s.gender === 'Female').length);
+        // ✅ Fixed — case insensitive filter
+        setMaleStudents(res.data.filter((s) => s.gender.toLowerCase() === 'male').length);
+        setFemaleStudents(res.data.filter((s) => s.gender.toLowerCase() === 'female').length);
         setLoading(false);
       })
       .catch((err) => {
@@ -53,8 +54,9 @@ function AllStudents() {
           const updatedStudents = students.filter(student => student._id !== id);
           setStudents(updatedStudents);
           setTotalStudents(updatedStudents.length);
-          setMaleStudents(updatedStudents.filter((s) => s.gender === 'Male').length);
-          setFemaleStudents(updatedStudents.filter((s) => s.gender === 'Female').length);
+          // ✅ Fixed — uses updatedStudents (not res.data) with case insensitive filter
+          setMaleStudents(updatedStudents.filter((s) => s.gender.toLowerCase() === 'male').length);
+          setFemaleStudents(updatedStudents.filter((s) => s.gender.toLowerCase() === 'female').length);
         })
         .catch((err) => {
           toast.error('Error deleting student! ❌');
