@@ -25,6 +25,8 @@ import 'react-toastify/dist/ReactToastify.css';
 // AddStudent component - Form to add a new student to the database
 function AddStudent() {
 
+  const navigate = useNavigate();
+
   // state to store form data - each field matches the Student model in the backend
   const [formData, setFormData] = useState({
     name: '',
