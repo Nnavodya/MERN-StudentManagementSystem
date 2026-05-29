@@ -49,6 +49,7 @@ function UpdateStudent() {
         setSuccessMessage('Student updated successfully! ✅');
         setErrorMessage('');
         toast.success('Student updated successfully! ✅');
+        
         // Redirect to students list after 1.5 seconds
         setTimeout(() => navigate('/students'), 1500);
       })
@@ -83,49 +84,75 @@ function UpdateStudent() {
 
               <Form onSubmit={handleSubmit}>
 
-                {/* Name field - pre-filled with existing student name */}
+                {/* Name field */}
                 <Form.Group className="mb-3">
                   <Form.Label style={{ color: '#ccc' }}>👤 Full Name</Form.Label>
                   <Form.Control
-                    type="text" name="name"
+                    type="text"
+                    name="name"
                     placeholder="Enter student full name"
                     value={formData.name}
-                    onChange={handleChange} required
-                    style={{ backgroundColor: '#16213e', border: '1px solid #0f3460', color: '#fff' }}
+                    onChange={handleChange}
+                    required
+                    style={{
+                      backgroundColor: '#16213e',
+                      border: '1px solid #0f3460',
+                      color: '#fff'
+                    }}
                   />
                 </Form.Group>
 
-                {/* Email field - pre-filled with existing student email */}
+                {/* Email field */}
                 <Form.Group className="mb-3">
                   <Form.Label style={{ color: '#ccc' }}>📧 Email Address</Form.Label>
                   <Form.Control
-                    type="email" name="email"
+                    type="email"
+                    name="email"
                     placeholder="Enter student email"
                     value={formData.email}
-                    onChange={handleChange} required
-                    style={{ backgroundColor: '#16213e', border: '1px solid #0f3460', color: '#fff' }}
+                    onChange={handleChange}
+                    required
+                    style={{
+                      backgroundColor: '#16213e',
+                      border: '1px solid #0f3460',
+                      color: '#fff'
+                    }}
                   />
                 </Form.Group>
 
-                {/* Age field - pre-filled with existing student age */}
+                {/* Age field */}
                 <Form.Group className="mb-3">
                   <Form.Label style={{ color: '#ccc' }}>🎂 Age</Form.Label>
                   <Form.Control
-                    type="number" name="age"
+                    type="number"
+                    name="age"
                     placeholder="Enter student age"
                     value={formData.age}
-                    onChange={handleChange} required min="1" max="100"
-                    style={{ backgroundColor: '#16213e', border: '1px solid #0f3460', color: '#fff' }}
+                    onChange={handleChange}
+                    required
+                    min="1"
+                    max="100"
+                    style={{
+                      backgroundColor: '#16213e',
+                      border: '1px solid #0f3460',
+                      color: '#fff'
+                    }}
                   />
                 </Form.Group>
 
-                {/* Gender field - pre-filled with existing student gender */}
+                {/* Gender field */}
                 <Form.Group className="mb-4">
                   <Form.Label style={{ color: '#ccc' }}>⚥ Gender</Form.Label>
                   <Form.Select
-                    name="gender" value={formData.gender}
-                    onChange={handleChange} required
-                    style={{ backgroundColor: '#16213e', border: '1px solid #0f3460', color: '#fff' }}
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleChange}
+                    required
+                    style={{
+                      backgroundColor: '#16213e',
+                      border: '1px solid #0f3460',
+                      color: '#fff'
+                    }}
                   >
                     <option value="">Select gender</option>
                     <option value="Male">Male</option>
@@ -134,18 +161,30 @@ function UpdateStudent() {
                   </Form.Select>
                 </Form.Group>
 
-                {/* Update and Cancel buttons */}
+                {/* Buttons */}
                 <Row>
                   <Col>
-                    <Button variant="primary" type="submit" className="w-100"
-                      style={{ backgroundColor: '#0f3460', border: 'none', padding: '10px' }}>
+                    <Button
+                      variant="primary"
+                      type="submit"
+                      className="w-100"
+                      style={{
+                        backgroundColor: '#0f3460',
+                        border: 'none',
+                        padding: '10px'
+                      }}
+                    >
                       ✏️ Update Student
                     </Button>
                   </Col>
+
                   <Col>
-                    <Button variant="outline-secondary" className="w-100"
+                    <Button
+                      variant="outline-secondary"
+                      className="w-100"
                       style={{ padding: '10px' }}
-                      onClick={() => navigate('/students')}>
+                      onClick={() => navigate('/students')}
+                    >
                       ❌ Cancel
                     </Button>
                   </Col>
