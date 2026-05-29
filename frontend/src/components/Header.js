@@ -1,6 +1,6 @@
-// Header.js — Improved Navbar with better spacing, hover effects and smooth transitions
+// Header.js — Updated with Dark/Light Mode Toggle + Improved Search Bar
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -13,11 +13,36 @@ import { NavLink, useNavigate } from 'react-router-dom';
 function Header() {
 
   const navigate = useNavigate();
+
   const token = localStorage.getItem('token');
   const username = localStorage.getItem('username');
 
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+
+  // =========================
+  // Dark Mode State
+  // =========================
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem('theme') === 'light' ? false : true;
+  });
+
+  // Apply theme to body
+  useEffect(() => {
+
+    if (darkMode) {
+      document.body.style.backgroundColor = '#0f172a';
+      document.body.style.color = '#ffffff';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.body.style.backgroundColor = '#f8fafc';
+      document.body.style.color = '#0f172a';
+      localStorage.setItem('theme', 'light');
+    }
+
+    document.body.style.transition = 'all 0.3s ease';
+
+  }, [darkMode]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -28,27 +53,55 @@ function Header() {
 
   const handleSearch = (e) => {
     e.preventDefault();
+
     if (!searchTerm.trim()) return;
+
     navigate(`/students?search=${searchTerm.trim()}`);
     setSearchTerm('');
   };
 
+  // Theme Colors
+  const theme = {
+    background: darkMode
+      ? 'linear-gradient(135deg, #0d1b2a 0%, #1a2f4a 100%)'
+      : 'linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)',
+
+    text: darkMode ? '#e2e8f0' : '#0f172a',
+
+    subText: darkMode ? '#a0aec0' : '#475569',
+
+    border: darkMode
+      ? 'rgba(99,179,237,0.15)'
+      : 'rgba(99,102,241,0.15)',
+
+    searchBg: darkMode
+      ? 'rgba(255,255,255,0.07)'
+      : '#ffffff',
+
+    cardBg: darkMode
+      ? 'rgba(255,255,255,0.05)'
+      : '#ffffff'
+  };
+
   return (
     <>
-      {/* ===== Improved Navbar ===== */}
+      {/* Navbar */}
       <Navbar
         expand="lg"
-        variant="dark"
         style={{
-          background: 'linear-gradient(135deg, #0d1b2a 0%, #1a2f4a 100%)',
-          borderBottom: '1px solid rgba(99,179,237,0.15)',
+          background: theme.background,
+          borderBottom: `1px solid ${theme.border}`,
           padding: '0',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+          boxShadow: darkMode
+            ? '0 4px 20px rgba(0,0,0,0.3)'
+            : '0 4px 20px rgba(0,0,0,0.08)',
           position: 'sticky',
           top: 0,
-          zIndex: 1000
+          zIndex: 1000,
+          transition: 'all 0.3s ease'
         }}
       >
+
         <Container style={{ padding: '14px 24px' }}>
 
           {/* Brand */}
@@ -56,184 +109,195 @@ function Header() {
             as={NavLink}
             to="/"
             style={{
-              color: '#e2e8f0',
+              color: theme.text,
               fontWeight: '700',
               fontSize: '22px',
               letterSpacing: '0.3px',
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              transition: 'color 0.2s ease'
+              transition: '0.3s'
             }}
-            onMouseEnter={(e) => e.currentTarget.style.color = '#63b3ed'}
-            onMouseLeave={(e) => e.currentTarget.style.color = '#e2e8f0'}
           >
             🎓 Student MS
           </Navbar.Brand>
 
-          <Navbar.Toggle
-            aria-controls="student-ms-navbar"
-            style={{
-              borderColor: 'rgba(99,179,237,0.3)',
-              padding: '6px 10px'
-            }}
-          />
+          <Navbar.Toggle />
 
-          <Navbar.Collapse id="student-ms-navbar">
-            <Nav className="ms-auto" style={{ alignItems: 'center', gap: '4px', padding: '8px 0' }}>
+          <Navbar.Collapse>
+
+            <Nav
+              className="ms-auto"
+              style={{
+                alignItems: 'center',
+                gap: '8px'
+              }}
+            >
 
               {token ? (
                 <>
-                  {/* Nav Links with smooth hover */}
+
+                  {/* Navigation Links */}
                   {[
                     { to: '/', label: '🏠 Home', end: true },
                     { to: '/students', label: '👨‍🎓 Students' },
                     { to: '/add-student', label: '➕ Add Student' }
                   ].map((link) => (
+
                     <Nav.Link
                       key={link.to}
                       as={NavLink}
                       to={link.to}
                       end={link.end}
                       style={({ isActive }) => ({
-                        color: isActive ? '#63b3ed' : '#a0aec0',
-                        backgroundColor: isActive ? 'rgba(99,179,237,0.12)' : 'transparent',
-                        borderRadius: '8px',
+                        color: isActive ? '#6366f1' : theme.subText,
+                        backgroundColor: isActive
+                          ? 'rgba(99,102,241,0.12)'
+                          : 'transparent',
+
+                        borderRadius: '10px',
                         padding: '8px 16px',
-                        fontWeight: isActive ? '600' : '400',
-                        fontSize: '15px',
-                        transition: 'all 0.25s ease',
-                        border: isActive ? '1px solid rgba(99,179,237,0.2)' : '1px solid transparent'
+                        fontWeight: isActive ? '600' : '500',
+                        transition: 'all 0.25s ease'
                       })}
-                      onMouseEnter={(e) => {
-                        if (!e.currentTarget.style.backgroundColor.includes('0.12')) {
-                          e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.07)';
-                          e.currentTarget.style.color = '#e2e8f0';
-                          e.currentTarget.style.transform = 'translateY(-2px)';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!e.currentTarget.style.backgroundColor.includes('0.12')) {
-                          e.currentTarget.style.backgroundColor = 'transparent';
-                          e.currentTarget.style.color = '#a0aec0';
-                          e.currentTarget.style.transform = 'translateY(0)';
-                        }
-                      }}
                     >
                       {link.label}
                     </Nav.Link>
+
                   ))}
 
-                  {/* Divider */}
-                  <div style={{
-                    width: '1px', height: '28px',
-                    backgroundColor: 'rgba(99,179,237,0.2)',
-                    margin: '0 8px'
-                  }} />
-
-                  {/* Search Box */}
+                  {/* Search Bar */}
                   <Form onSubmit={handleSearch}>
-                    <InputGroup style={{ width: '220px' }}>
+
+                    <InputGroup
+                      style={{
+                        width: '250px',
+                        marginLeft: '8px'
+                      }}
+                    >
+
+                      {/* Search Icon */}
+                      <InputGroup.Text
+                        style={{
+                          background: theme.searchBg,
+                          border: '1px solid #cbd5e1',
+                          borderRight: 'none',
+                          borderRadius: '14px 0 0 14px',
+                          color: '#6366f1'
+                        }}
+                      >
+                        🔍
+                      </InputGroup.Text>
+
+                      {/* Search Input */}
                       <Form.Control
                         type="text"
                         placeholder="Search student..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         style={{
-                          backgroundColor: 'rgba(255,255,255,0.07)',
-                          border: '1px solid rgba(99,179,237,0.25)',
-                          borderRight: 'none',
-                          color: '#e2e8f0',
-                          fontSize: '13px',
-                          borderRadius: '8px 0 0 8px',
-                          transition: 'all 0.25s ease'
+                          backgroundColor: theme.searchBg,
+                          border: '1px solid #cbd5e1',
+                          borderLeft: 'none',
+                          color: theme.text,
+                          borderRadius: '0 14px 14px 0',
+                          padding: '10px 14px',
+                          fontSize: '14px',
+                          transition: 'all 0.3s ease'
                         }}
                         onFocus={(e) => {
-                          e.target.style.backgroundColor = 'rgba(99,179,237,0.1)';
-                          e.target.style.borderColor = '#63b3ed';
-                          e.target.style.boxShadow = '0 0 0 3px rgba(99,179,237,0.15)';
+                          e.target.style.borderColor = '#6366f1';
+                          e.target.style.boxShadow =
+                            '0 0 10px rgba(99,102,241,0.3)';
                         }}
                         onBlur={(e) => {
-                          e.target.style.backgroundColor = 'rgba(255,255,255,0.07)';
-                          e.target.style.borderColor = 'rgba(99,179,237,0.25)';
+                          e.target.style.borderColor = '#cbd5e1';
                           e.target.style.boxShadow = 'none';
                         }}
                       />
-                      <Button
-                        type="submit"
-                        style={{
-                          backgroundColor: '#4F46E5',
-                          border: '1px solid #4F46E5',
-                          borderLeft: 'none',
-                          borderRadius: '0 8px 8px 0',
-                          padding: '0 14px',
-                          transition: 'all 0.2s ease'
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#3730a3'}
-                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#4F46E5'}
-                      >
-                        🔍
-                      </Button>
+
                     </InputGroup>
+
                   </Form>
 
-                  {/* Divider */}
-                  <div style={{
-                    width: '1px', height: '28px',
-                    backgroundColor: 'rgba(99,179,237,0.2)',
-                    margin: '0 8px'
-                  }} />
+                  {/* Dark Mode Toggle */}
+                  <button
+                    onClick={() => setDarkMode(!darkMode)}
+                    style={{
+                      border: 'none',
+                      background: darkMode
+                        ? 'rgba(255,255,255,0.08)'
+                        : '#ffffff',
+                      color: darkMode ? '#facc15' : '#4f46e5',
+                      padding: '10px 14px',
+                      borderRadius: '12px',
+                      cursor: 'pointer',
+                      fontSize: '18px',
+                      transition: 'all 0.3s ease',
+                      boxShadow: darkMode
+                        ? '0 4px 12px rgba(0,0,0,0.3)'
+                        : '0 4px 12px rgba(99,102,241,0.15)'
+                    }}
+                  >
+                    {darkMode ? '☀️' : '🌙'}
+                  </button>
 
-                  {/* User Avatar */}
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    padding: '6px 12px',
-                    borderRadius: '8px',
-                    backgroundColor: 'rgba(255,255,255,0.05)',
-                    border: '1px solid rgba(99,179,237,0.15)',
-                    cursor: 'default'
-                  }}>
-                    <div style={{
-                      width: '30px', height: '30px',
-                      borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #4F46E5, #06B6D4)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: '12px', fontWeight: '700', color: '#fff',
-                      boxShadow: '0 2px 8px rgba(79,70,229,0.4)'
-                    }}>
-                      {username ? username.slice(0, 2).toUpperCase() : 'U'}
+                  {/* User */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '8px 12px',
+                      borderRadius: '12px',
+                      background: theme.cardBg,
+                      border: `1px solid ${theme.border}`
+                    }}
+                  >
+
+                    <div
+                      style={{
+                        width: '34px',
+                        height: '34px',
+                        borderRadius: '50%',
+                        background:
+                          'linear-gradient(135deg,#4F46E5,#06B6D4)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#fff',
+                        fontWeight: '700',
+                        fontSize: '13px'
+                      }}
+                    >
+                      {username
+                        ? username.slice(0, 2).toUpperCase()
+                        : 'U'}
                     </div>
-                    <span style={{ color: '#e2e8f0', fontSize: '14px', fontWeight: '500' }}>
+
+                    <span
+                      style={{
+                        color: theme.text,
+                        fontSize: '14px',
+                        fontWeight: '500'
+                      }}
+                    >
                       {username}
                     </span>
+
                   </div>
 
-                  {/* Logout Button */}
+                  {/* Logout */}
                   <button
                     onClick={() => setShowLogoutModal(true)}
                     style={{
-                      color: '#fc8181',
-                      fontWeight: '600',
-                      cursor: 'pointer',
+                      color: '#ef4444',
+                      background: 'transparent',
+                      border: '1px solid rgba(239,68,68,0.3)',
                       padding: '8px 16px',
-                      borderRadius: '8px',
-                      border: '1px solid rgba(252,129,129,0.3)',
-                      backgroundColor: 'transparent',
-                      fontSize: '14px',
-                      transition: 'all 0.25s ease',
-                      marginLeft: '4px'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = 'rgba(252,129,129,0.12)';
-                      e.currentTarget.style.borderColor = 'rgba(252,129,129,0.5)';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                      e.currentTarget.style.borderColor = 'rgba(252,129,129,0.3)';
-                      e.currentTarget.style.transform = 'translateY(0)';
+                      borderRadius: '10px',
+                      fontWeight: '600',
+                      transition: '0.3s'
                     }}
                   >
                     🚪 Logout
@@ -241,66 +305,82 @@ function Header() {
 
                 </>
               ) : (
+
                 <Nav.Link
                   as={NavLink}
                   to="/login"
-                  style={({ isActive }) => ({
-                    color: isActive ? '#63b3ed' : '#a0aec0',
-                    backgroundColor: isActive ? 'rgba(99,179,237,0.12)' : 'transparent',
-                    borderRadius: '8px',
-                    padding: '8px 16px',
-                    fontWeight: '500',
-                    fontSize: '15px',
-                    transition: 'all 0.25s ease'
-                  })}
+                  style={{
+                    color: theme.text,
+                    fontWeight: '500'
+                  }}
                 >
                   🔐 Login
                 </Nav.Link>
+
               )}
 
             </Nav>
+
           </Navbar.Collapse>
+
         </Container>
+
       </Navbar>
 
-      {/* Logout Confirmation Modal */}
-      <Modal show={showLogoutModal} onHide={() => setShowLogoutModal(false)} centered size="sm">
-        <Modal.Header closeButton style={{
-          background: 'linear-gradient(135deg, #0d1b2a, #1a2f4a)',
-          borderBottom: '1px solid rgba(99,179,237,0.15)'
-        }}>
-          <Modal.Title style={{ color: '#e2e8f0', fontSize: '16px', fontWeight: '600' }}>
+      {/* Logout Modal */}
+      <Modal
+        show={showLogoutModal}
+        onHide={() => setShowLogoutModal(false)}
+        centered
+      >
+
+        <Modal.Header
+          closeButton
+          style={{
+            background: theme.background,
+            borderBottom: `1px solid ${theme.border}`
+          }}
+        >
+          <Modal.Title
+            style={{
+              color: theme.text
+            }}
+          >
             🚪 Confirm Logout
           </Modal.Title>
         </Modal.Header>
 
-        <Modal.Body style={{
-          background: 'linear-gradient(135deg, #0d1b2a, #1a2f4a)',
-          color: '#a0aec0', fontSize: '14px', padding: '20px 24px'
-        }}>
+        <Modal.Body
+          style={{
+            background: theme.background,
+            color: theme.subText
+          }}
+        >
           Are you sure you want to logout?
         </Modal.Body>
 
-        <Modal.Footer style={{
-          background: 'linear-gradient(135deg, #0d1b2a, #1a2f4a)',
-          borderTop: '1px solid rgba(99,179,237,0.15)',
-          gap: '8px'
-        }}>
-          <Button variant="outline-secondary" size="sm"
-            style={{ borderRadius: '8px', fontSize: '13px' }}
-            onClick={() => setShowLogoutModal(false)}>
+        <Modal.Footer
+          style={{
+            background: theme.background,
+            borderTop: `1px solid ${theme.border}`
+          }}
+        >
+          <Button
+            variant="secondary"
+            onClick={() => setShowLogoutModal(false)}
+          >
             Cancel
           </Button>
-          <Button size="sm" onClick={handleLogout}
-            style={{
-              background: 'linear-gradient(135deg, #fc8181, #f56565)',
-              border: 'none', borderRadius: '8px',
-              fontSize: '13px', fontWeight: '600',
-              boxShadow: '0 2px 8px rgba(252,129,129,0.3)'
-            }}>
-            Yes, Logout
+
+          <Button
+            variant="danger"
+            onClick={handleLogout}
+          >
+            Logout
           </Button>
+
         </Modal.Footer>
+
       </Modal>
     </>
   );
