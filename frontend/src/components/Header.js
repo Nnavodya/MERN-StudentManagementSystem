@@ -11,6 +11,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 function Header() {
@@ -26,15 +27,10 @@ function Header() {
 
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  // ===== Added search state =====
+  // ===== Search state =====
   // Stores the current search input value typed by user
 
   const [searchTerm, setSearchTerm] = useState('');
-
-  // ===== Added search expanded state =====
-  // Controls whether the search input is visible or collapsed
-
-  const [searchExpanded, setSearchExpanded] = useState(false);
 
   // ===== handleLogout =====
   // Removes token and username from localStorage and redirects to login
@@ -48,7 +44,6 @@ function Header() {
 
   // ===== handleSearch =====
   // Navigates to /students page with search query in URL params
-  // AllStudents.js can read this param and filter results
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -59,41 +54,32 @@ function Header() {
     // navigate to students page with search query as URL param
     navigate(`/students?search=${searchTerm.trim()}`);
 
-    // clear search input and collapse after search
+    // clear search input after search
     setSearchTerm('');
-    setSearchExpanded(false);
-  };
-
-  // ===== handleSearchIconClick =====
-  // Toggles search input visibility when search icon is clicked
-
-  const handleSearchIconClick = () => {
-    setSearchExpanded(!searchExpanded);
-
-    // clear search term when collapsing
-    if (searchExpanded) {
-      setSearchTerm('');
-    }
   };
 
   // ===== Active link style =====
   // Applied to the currently active NavLink
+  // ===== Increased font size to 16px for better readability =====
 
   const activeLinkStyle = {
     color: '#63b3ed',
     backgroundColor: 'rgba(99,179,237,0.12)',
     borderRadius: '6px',
-    padding: '6px 12px',
-    fontWeight: '500'
+    padding: '6px 14px',
+    fontWeight: '500',
+    fontSize: '16px'
   };
 
   // ===== Default link style =====
   // Applied to inactive NavLinks
+  // ===== Increased font size to 16px for better readability =====
 
   const defaultLinkStyle = {
     color: '#a0aec0',
-    padding: '6px 12px',
-    transition: '0.2s'
+    padding: '6px 14px',
+    transition: '0.2s',
+    fontSize: '16px'
   };
 
   return (
@@ -109,21 +95,21 @@ function Header() {
         style={{
           backgroundColor: '#0d1b2a',
           borderBottom: '1px solid #1e3a5f',
-          padding: '10px 0'
+          padding: '12px 0'
         }}
       >
         <Container>
 
           {/* ===== Brand / Logo ===== */}
-          {/* Displayed on left side of navbar */}
+          {/* ===== Increased font size to 22px for strong brand presence ===== */}
 
           <Navbar.Brand
             as={NavLink}
             to="/"
             style={{
               color: '#e2e8f0',
-              fontWeight: '600',
-              fontSize: '18px',
+              fontWeight: '700',
+              fontSize: '22px',
               letterSpacing: '0.5px'
             }}
           >
@@ -139,7 +125,7 @@ function Header() {
           />
 
           <Navbar.Collapse id="student-ms-navbar">
-            <Nav className="ms-auto" style={{ alignItems: 'center', gap: '4px' }}>
+            <Nav className="ms-auto" style={{ alignItems: 'center', gap: '6px' }}>
 
               {token ? (
 
@@ -184,81 +170,54 @@ function Header() {
                     ➕ Add Student
                   </Nav.Link>
 
-                  {/* ===== Search Bar ===== */}
-                  {/* Search icon click → input expands → type → Enter to search */}
-                  {/* Navigates to /students?search=keyword on submit */}
+                  {/* ===== Search Box with Icon ===== */}
+                  {/* Always visible search input with search icon button */}
+                  {/* Submits on button click or pressing Enter */}
 
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    marginLeft: '4px'
-                  }}>
+                  <Form
+                    onSubmit={handleSearch}
+                    style={{ marginLeft: '8px' }}
+                  >
+                    <InputGroup style={{ width: '220px' }}>
 
-                    {/* ===== Animated search input ===== */}
-                    {/* Expands when searchExpanded is true, collapses when false */}
-
-                    <Form
-                      onSubmit={handleSearch}
-                      style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-                    >
+                      {/* Search text input */}
 
                       <Form.Control
                         type="text"
                         placeholder="Search student..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        size="sm"
                         style={{
-
-                          // ===== Smooth expand/collapse animation =====
-                          // Width transitions from 0 to 180px based on searchExpanded
-
-                          width: searchExpanded ? '180px' : '0px',
-                          opacity: searchExpanded ? 1 : 0,
-                          padding: searchExpanded ? '5px 10px' : '0',
-                          overflow: 'hidden',
-                          transition: 'width 0.3s ease, opacity 0.3s ease',
                           backgroundColor: '#1e3a5f',
                           border: '1px solid #2d5a8e',
+                          borderRight: 'none',
                           color: '#e2e8f0',
-                          borderRadius: '6px',
-                          fontSize: '13px'
+                          fontSize: '14px',
+                          borderRadius: '8px 0 0 8px'
                         }}
                       />
 
-                    </Form>
+                      {/* Search icon button */}
 
-                    {/* Search icon button — toggles search input visibility */}
+                      <Button
+                        type="submit"
+                        style={{
+                          backgroundColor: '#63b3ed',
+                          border: '1px solid #63b3ed',
+                          borderLeft: 'none',
+                          borderRadius: '0 8px 8px 0',
+                          padding: '0 14px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                      >
+                        {/* Search icon using unicode */}
+                        <span style={{ fontSize: '15px' }}>🔍</span>
+                      </Button>
 
-                    <div
-                      onClick={handleSearchIconClick}
-                      title={searchExpanded ? 'Close search' : 'Search students'}
-                      style={{
-                        cursor: 'pointer',
-                        color: searchExpanded ? '#63b3ed' : '#a0aec0',
-                        fontSize: '18px',
-                        padding: '4px 6px',
-                        borderRadius: '6px',
-                        backgroundColor: searchExpanded ? 'rgba(99,179,237,0.12)' : 'transparent',
-                        transition: '0.2s',
-                        display: 'flex',
-                        alignItems: 'center'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#63b3ed';
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!searchExpanded) {
-                          e.currentTarget.style.color = '#a0aec0';
-                        }
-                      }}
-                    >
-                      {/* Show X icon when expanded, search icon when collapsed */}
-                      {searchExpanded ? '✕' : '🔍'}
-                    </div>
-
-                  </div>
+                    </InputGroup>
+                  </Form>
 
                   {/* ===== User Avatar with initials ===== */}
                   {/* Shows first 2 letters of username in a styled circle */}
@@ -270,22 +229,23 @@ function Header() {
                       display: 'flex',
                       alignItems: 'center',
                       gap: '8px',
-                      padding: '4px 10px'
+                      padding: '4px 10px',
+                      fontSize: '15px'
                     }}
                   >
 
                     {/* Initials circle */}
 
                     <div style={{
-                      width: '30px',
-                      height: '30px',
+                      width: '32px',
+                      height: '32px',
                       borderRadius: '50%',
                       backgroundColor: '#1e3a5f',
                       border: '1.5px solid #63b3ed',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '11px',
+                      fontSize: '12px',
                       fontWeight: '600',
                       color: '#63b3ed'
                     }}>
@@ -294,12 +254,13 @@ function Header() {
                     </div>
 
                     {/* Username text */}
-                    <span style={{ fontSize: '13px' }}>{username}</span>
+                    <span style={{ fontSize: '15px' }}>{username}</span>
 
                   </Nav.Link>
 
                   {/* ===== Logout Button ===== */}
                   {/* Opens confirmation modal before logging out */}
+                  {/* ===== Increased font size to 15px ===== */}
 
                   <Nav.Link
                     onClick={() => setShowLogoutModal(true)}
@@ -307,11 +268,12 @@ function Header() {
                       color: '#fc8181',
                       fontWeight: '600',
                       cursor: 'pointer',
-                      padding: '6px 12px',
+                      padding: '6px 14px',
                       borderRadius: '6px',
                       border: '1px solid #fc818133',
                       marginLeft: '4px',
-                      transition: '0.2s'
+                      transition: '0.2s',
+                      fontSize: '15px'
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.backgroundColor = '#fc818122';
