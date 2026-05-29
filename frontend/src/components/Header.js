@@ -1,6 +1,6 @@
 // ===================================================
 // Header.js
-// Navigation bar with logout support
+// Navigation bar with logout support and search bar
 // Theme: Midnight Blue (#0d1b2a)
 // ===================================================
 
@@ -10,6 +10,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 function Header() {
@@ -20,10 +21,20 @@ function Header() {
   const token = localStorage.getItem('token');
   const username = localStorage.getItem('username');
 
-  // ===== Added logout confirmation modal state =====
+  // ===== Logout confirmation modal state =====
   // Controls whether the logout confirmation modal is visible
 
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  // ===== Added search state =====
+  // Stores the current search input value typed by user
+
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // ===== Added search expanded state =====
+  // Controls whether the search input is visible or collapsed
+
+  const [searchExpanded, setSearchExpanded] = useState(false);
 
   // ===== handleLogout =====
   // Removes token and username from localStorage and redirects to login
@@ -33,6 +44,36 @@ function Header() {
     localStorage.removeItem('username');
     setShowLogoutModal(false);
     navigate('/login');
+  };
+
+  // ===== handleSearch =====
+  // Navigates to /students page with search query in URL params
+  // AllStudents.js can read this param and filter results
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+
+    // if search term is empty, do nothing
+    if (!searchTerm.trim()) return;
+
+    // navigate to students page with search query as URL param
+    navigate(`/students?search=${searchTerm.trim()}`);
+
+    // clear search input and collapse after search
+    setSearchTerm('');
+    setSearchExpanded(false);
+  };
+
+  // ===== handleSearchIconClick =====
+  // Toggles search input visibility when search icon is clicked
+
+  const handleSearchIconClick = () => {
+    setSearchExpanded(!searchExpanded);
+
+    // clear search term when collapsing
+    if (searchExpanded) {
+      setSearchTerm('');
+    }
   };
 
   // ===== Active link style =====
@@ -102,7 +143,7 @@ function Header() {
 
               {token ? (
 
-                // ===== Logged in — show nav links =====
+                // ===== Logged in — show nav links and search =====
 
                 <>
 
@@ -142,6 +183,82 @@ function Header() {
                   >
                     ➕ Add Student
                   </Nav.Link>
+
+                  {/* ===== Search Bar ===== */}
+                  {/* Search icon click → input expands → type → Enter to search */}
+                  {/* Navigates to /students?search=keyword on submit */}
+
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    marginLeft: '4px'
+                  }}>
+
+                    {/* ===== Animated search input ===== */}
+                    {/* Expands when searchExpanded is true, collapses when false */}
+
+                    <Form
+                      onSubmit={handleSearch}
+                      style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                    >
+
+                      <Form.Control
+                        type="text"
+                        placeholder="Search student..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        size="sm"
+                        style={{
+
+                          // ===== Smooth expand/collapse animation =====
+                          // Width transitions from 0 to 180px based on searchExpanded
+
+                          width: searchExpanded ? '180px' : '0px',
+                          opacity: searchExpanded ? 1 : 0,
+                          padding: searchExpanded ? '5px 10px' : '0',
+                          overflow: 'hidden',
+                          transition: 'width 0.3s ease, opacity 0.3s ease',
+                          backgroundColor: '#1e3a5f',
+                          border: '1px solid #2d5a8e',
+                          color: '#e2e8f0',
+                          borderRadius: '6px',
+                          fontSize: '13px'
+                        }}
+                      />
+
+                    </Form>
+
+                    {/* Search icon button — toggles search input visibility */}
+
+                    <div
+                      onClick={handleSearchIconClick}
+                      title={searchExpanded ? 'Close search' : 'Search students'}
+                      style={{
+                        cursor: 'pointer',
+                        color: searchExpanded ? '#63b3ed' : '#a0aec0',
+                        fontSize: '18px',
+                        padding: '4px 6px',
+                        borderRadius: '6px',
+                        backgroundColor: searchExpanded ? 'rgba(99,179,237,0.12)' : 'transparent',
+                        transition: '0.2s',
+                        display: 'flex',
+                        alignItems: 'center'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.color = '#63b3ed';
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!searchExpanded) {
+                          e.currentTarget.style.color = '#a0aec0';
+                        }
+                      }}
+                    >
+                      {/* Show X icon when expanded, search icon when collapsed */}
+                      {searchExpanded ? '✕' : '🔍'}
+                    </div>
+
+                  </div>
 
                   {/* ===== User Avatar with initials ===== */}
                   {/* Shows first 2 letters of username in a styled circle */}
