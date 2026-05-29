@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// ===== Added Spinner component =====
-// Spinner is used to show loading animation while form is submitting
-
 import {
   Container,
   Form,
@@ -16,9 +13,6 @@ import {
 
 import axios from 'axios';
 
-// ===== Added React Toastify =====
-// Toastify is used to show professional popup notifications
-
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -27,7 +21,6 @@ function AddStudent() {
 
   const navigate = useNavigate();
 
-  // state to store form data - each field matches the Student model in the backend
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -35,19 +28,9 @@ function AddStudent() {
     gender: ''
   });
 
-  // state to show success or error message after form submission
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-
-  // ===== Added loading state =====
-  // This state is used to disable the submit button
-  // and show loading spinner while data is being sent to backend
-
   const [loading, setLoading] = useState(false);
-
-  // ===== Added validation state =====
-  // Stores validation errors for each field
-  // ===== Moved above handleChange to fix 'validateField is not defined' error =====
 
   const [validationErrors, setValidationErrors] = useState({
     name: '',
@@ -55,16 +38,11 @@ function AddStudent() {
     age: ''
   });
 
-  // ===== Added validateField function =====
-  // This function validates a single field and returns an error message
-  // Called in real-time as the user types in each field
-
   const validateField = (name, value) => {
 
     let error = '';
 
     if (name === 'name') {
-      // name must be at least 3 characters
       if (!value.trim()) {
         error = 'Name is required.';
       } else if (value.trim().length < 3) {
@@ -73,7 +51,6 @@ function AddStudent() {
     }
 
     if (name === 'email') {
-      // email must match standard email format
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!value.trim()) {
         error = 'Email is required.';
@@ -83,15 +60,12 @@ function AddStudent() {
     }
 
     if (name === 'age') {
-      // age must be between 1 and 100
       if (!value) {
         error = 'Age is required.';
       } else if (value < 1 || value > 100) {
         error = 'Age must be between 1 and 100.';
       }
     }
-
-    // ===== Update validationErrors state with the new error for this field =====
 
     setValidationErrors((prev) => ({
       ...prev,
@@ -100,161 +74,72 @@ function AddStudent() {
 
   };
 
-  // handleChange is called every time the user types in a form field
-  // it updates the formData state with the new value
-
   const handleChange = (e) => {
-
-    // ===== Added real-time validation support =====
-    // Updates form data instantly while typing
-
     const { name, value } = e.target;
-
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-
-    // ===== Added real-time validation call =====
-    // Validates the field as the user types
-
+    setFormData({ ...formData, [name]: value });
     validateField(name, value);
-
   };
-
-  // handleSubmit is called when the user clicks the submit button
-  // it sends the form data to the backend API
 
   const handleSubmit = async (e) => {
 
-    e.preventDefault(); // prevent page reload on form submit
-
-    // ===== Added input validation =====
-
-    // remove extra spaces from inputs
+    e.preventDefault();
 
     const trimmedName = formData.name.trim();
     const trimmedEmail = formData.email.trim();
 
-    // validate name length
-
     if (trimmedName.length < 3) {
-
       setErrorMessage('Name must contain at least 3 characters ❌');
       setSuccessMessage('');
-
-      // ===== Added toast error message =====
-
       toast.error('Name must contain at least 3 characters ❌');
-
       return;
-
     }
-
-    // validate email format
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
     if (!emailPattern.test(trimmedEmail)) {
-
       setErrorMessage('Please enter a valid email address ❌');
       setSuccessMessage('');
-
-      // ===== Added toast error message =====
-
       toast.error('Please enter a valid email address ❌');
-
       return;
-
     }
-
-    // validate age range
 
     if (formData.age < 1 || formData.age > 100) {
-
       setErrorMessage('Age must be between 1 and 100 ❌');
       setSuccessMessage('');
-
-      // ===== Added toast error message =====
-
       toast.error('Age must be between 1 and 100 ❌');
-
       return;
-
     }
-
-    // ===== Added loading state =====
 
     setLoading(true);
 
     try {
 
-      // sending POST request to backend to add new student
-
-      const res = await axios.post(
-        'http://localhost:5000/api/students/add',
-        formData
-      );
-
-      // success message after adding student
+      await axios.post('http://localhost:5000/api/students/add', formData);
 
       setSuccessMessage('Student added successfully! ✅');
       setErrorMessage('');
-
-      // ===== Added success toast =====
-
       toast.success('Student added successfully! ✅');
 
-      // reset form fields after successful submission
+      setFormData({ name: '', email: '', age: '', gender: '' });
+      setValidationErrors({ name: '', email: '', age: '' });
 
-      setFormData({
-        name: '',
-        email: '',
-        age: '',
-        gender: ''
-      });
-
-      // ===== Clear validation errors after successful submission =====
-
-      setValidationErrors({
-        name: '',
-        email: '',
-        age: ''
-      });
+      // Navigate to students page after 1 second so recent activity feed updates
+      setTimeout(() => navigate('/students'), 1000);
 
     } catch (err) {
 
-      // ===== Added duplicate email handling =====
-      // Shows proper message if email already exists
-
       if (err.response?.data?.error?.includes('duplicate')) {
-
         setErrorMessage('Email already exists ❌');
-
-        // ===== Added duplicate email toast =====
-
         toast.error('Email already exists ❌');
-
       } else {
-
         setErrorMessage('Error adding student. Please try again! ❌');
-
-        // ===== Added general error toast =====
-
         toast.error('Error adding student ❌');
-
       }
 
       setSuccessMessage('');
-
       console.log(err);
 
     } finally {
-
-      // stop loading spinner
-
       setLoading(false);
-
     }
 
   };
@@ -262,24 +147,13 @@ function AddStudent() {
   return (
 
     <>
-
-      {/* ===== Added Toast Container ===== */}
-      {/* This component displays toast notifications */}
-
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        theme="dark"
-      />
+      <ToastContainer position="top-right" autoClose={3000} theme="dark" />
 
       <Container className="mt-5">
-
         <Row className="justify-content-center">
-
           <Col md={6}>
 
             {/* Form card */}
-
             <div style={{
               backgroundColor: '#1a1a2e',
               borderRadius: '15px',
@@ -287,44 +161,18 @@ function AddStudent() {
               boxShadow: '0 4px 20px rgba(0,0,0,0.3)'
             }}>
 
-              {/* Form title */}
-
-              <h2 style={{
-                color: '#fff',
-                textAlign: 'center',
-                marginBottom: '30px'
-              }}>
+              <h2 style={{ color: '#fff', textAlign: 'center', marginBottom: '30px' }}>
                 ➕ Add New Student
               </h2>
 
-              {/* Success message - shows after successful form submission */}
-
-              {successMessage && (
-                <Alert variant="success">
-                  {successMessage}
-                </Alert>
-              )}
-
-              {/* Error message - shows if form submission fails */}
-
-              {errorMessage && (
-                <Alert variant="danger">
-                  {errorMessage}
-                </Alert>
-              )}
-
-              {/* Add Student Form */}
+              {successMessage && <Alert variant="success">{successMessage}</Alert>}
+              {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
 
               <Form onSubmit={handleSubmit}>
 
                 {/* Name field */}
-
                 <Form.Group className="mb-3">
-
-                  <Form.Label style={{ color: '#ccc' }}>
-                    👤 Full Name
-                  </Form.Label>
-
+                  <Form.Label style={{ color: '#ccc' }}>👤 Full Name</Form.Label>
                   <Form.Control
                     type="text"
                     name="name"
@@ -332,40 +180,22 @@ function AddStudent() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-
-                    // ===== Added dynamic validation border =====
-
                     style={{
                       backgroundColor: '#16213e',
-                      border: validationErrors.name
-                        ? '1px solid #ff4d4f'
-                        : '1px solid #0f3460',
+                      border: validationErrors.name ? '1px solid #ff4d4f' : '1px solid #0f3460',
                       color: '#fff',
                       transition: '0.3s',
-                      boxShadow: validationErrors.name
-                        ? '0 0 10px rgba(255,77,79,0.5)'
-                        : 'none'
+                      boxShadow: validationErrors.name ? '0 0 10px rgba(255,77,79,0.5)' : 'none'
                     }}
                   />
-
-                  {/* ===== Added real-time name validation message ===== */}
-
                   {validationErrors.name && (
-                    <small style={{ color: '#ff4d4f' }}>
-                      {validationErrors.name}
-                    </small>
+                    <small style={{ color: '#ff4d4f' }}>{validationErrors.name}</small>
                   )}
-
                 </Form.Group>
 
                 {/* Email field */}
-
                 <Form.Group className="mb-3">
-
-                  <Form.Label style={{ color: '#ccc' }}>
-                    📧 Email Address
-                  </Form.Label>
-
+                  <Form.Label style={{ color: '#ccc' }}>📧 Email Address</Form.Label>
                   <Form.Control
                     type="email"
                     name="email"
@@ -375,35 +205,20 @@ function AddStudent() {
                     required
                     style={{
                       backgroundColor: '#16213e',
-                      border: validationErrors.email
-                        ? '1px solid #ff4d4f'
-                        : '1px solid #0f3460',
+                      border: validationErrors.email ? '1px solid #ff4d4f' : '1px solid #0f3460',
                       color: '#fff',
                       transition: '0.3s',
-                      boxShadow: validationErrors.email
-                        ? '0 0 10px rgba(255,77,79,0.5)'
-                        : 'none'
+                      boxShadow: validationErrors.email ? '0 0 10px rgba(255,77,79,0.5)' : 'none'
                     }}
                   />
-
-                  {/* ===== Added real-time email validation message ===== */}
-
                   {validationErrors.email && (
-                    <small style={{ color: '#ff4d4f' }}>
-                      {validationErrors.email}
-                    </small>
+                    <small style={{ color: '#ff4d4f' }}>{validationErrors.email}</small>
                   )}
-
                 </Form.Group>
 
                 {/* Age field */}
-
                 <Form.Group className="mb-3">
-
-                  <Form.Label style={{ color: '#ccc' }}>
-                    🎂 Age
-                  </Form.Label>
-
+                  <Form.Label style={{ color: '#ccc' }}>🎂 Age</Form.Label>
                   <Form.Control
                     type="number"
                     name="age"
@@ -415,64 +230,37 @@ function AddStudent() {
                     max="100"
                     style={{
                       backgroundColor: '#16213e',
-                      border: validationErrors.age
-                        ? '1px solid #ff4d4f'
-                        : '1px solid #0f3460',
+                      border: validationErrors.age ? '1px solid #ff4d4f' : '1px solid #0f3460',
                       color: '#fff',
                       transition: '0.3s',
-                      boxShadow: validationErrors.age
-                        ? '0 0 10px rgba(255,77,79,0.5)'
-                        : 'none'
+                      boxShadow: validationErrors.age ? '0 0 10px rgba(255,77,79,0.5)' : 'none'
                     }}
                   />
-
-                  {/* ===== Added real-time age validation message ===== */}
-
                   {validationErrors.age && (
-                    <small style={{ color: '#ff4d4f' }}>
-                      {validationErrors.age}
-                    </small>
+                    <small style={{ color: '#ff4d4f' }}>{validationErrors.age}</small>
                   )}
-
                 </Form.Group>
 
-                {/* Gender field - dropdown select */}
-
+                {/* Gender field */}
                 <Form.Group className="mb-4">
-
-                  <Form.Label style={{ color: '#ccc' }}>
-                    ⚥ Gender
-                  </Form.Label>
-
+                  <Form.Label style={{ color: '#ccc' }}>⚥ Gender</Form.Label>
                   <Form.Select
                     name="gender"
                     value={formData.gender}
                     onChange={handleChange}
                     required
-                    style={{
-                      backgroundColor: '#16213e',
-                      border: '1px solid #0f3460',
-                      color: '#fff'
-                    }}
+                    style={{ backgroundColor: '#16213e', border: '1px solid #0f3460', color: '#fff' }}
                   >
-
                     <option value="">Select gender</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                     <option value="Other">Other</option>
-
                   </Form.Select>
-
                 </Form.Group>
 
                 {/* Submit and Reset buttons */}
-
                 <Row>
-
                   <Col>
-
-                    {/* Submit button - sends form data to backend */}
-
                     <Button
                       variant="primary"
                       type="submit"
@@ -487,77 +275,42 @@ function AddStudent() {
                         letterSpacing: '0.5px'
                       }}
                     >
-
-                      {/* ===== Added loading spinner inside button ===== */}
-
                       {loading ? (
                         <>
-                          <Spinner
-                            as="span"
-                            animation="border"
-                            size="sm"
-                            role="status"
-                            aria-hidden="true"
-                          />
+                          <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
                           {' '}Adding Student...
                         </>
                       ) : (
                         '➕ Add Student'
                       )}
-
                     </Button>
-
                   </Col>
 
                   <Col>
-
-                    {/* Reset button - clears all form fields */}
-
                     <Button
                       variant="outline-secondary"
                       type="reset"
                       className="w-100"
                       style={{ padding: '10px' }}
                       onClick={() => {
-
-                        // ===== Also clear validation errors on reset =====
-
-                        setFormData({
-                          name: '',
-                          email: '',
-                          age: '',
-                          gender: ''
-                        });
-
-                        setValidationErrors({
-                          name: '',
-                          email: '',
-                          age: ''
-                        });
-
+                        setFormData({ name: '', email: '', age: '', gender: '' });
+                        setValidationErrors({ name: '', email: '', age: '' });
                       }}
                     >
                       🔄 Reset
                     </Button>
-
                   </Col>
-
                 </Row>
 
               </Form>
-
             </div>
-
           </Col>
-
         </Row>
-
       </Container>
-
     </>
 
   );
 
 }
 
-export default AddStudent; // exporting AddStudent component for use in App.js
+export default AddStudent;
