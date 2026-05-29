@@ -1,38 +1,174 @@
-.App {
-  text-align: center;
+/* ===================================================
+   App.css — Global styles with Poppins font
+   Color Palette:
+   Primary:    #4F46E5
+   Secondary:  #06B6D4
+   Success:    #22C55E
+   Danger:     #EF4444
+   Background: #F8FAFC
+=================================================== */
+
+/* Import Poppins font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Apply Poppins globally */
+* {
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+  background-color: #F8FAFC;
+  color: #1e293b;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* ===== Scrollbar styling ===== */
+::-webkit-scrollbar {
+  width: 6px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
 }
 
-.App-link {
-  color: #61dafb;
+::-webkit-scrollbar-thumb {
+  background: #4F46E5;
+  border-radius: 10px;
 }
 
-@keyframes App-logo-spin {
+::-webkit-scrollbar-thumb:hover {
+  background: #3730a3;
+}
+
+/* ===== Card hover animation ===== */
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* ===== Button hover scale ===== */
+.btn {
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+  border-radius: 10px !important;
+}
+
+.btn:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== Table improvements ===== */
+.table-modern {
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.table-modern thead th {
+  background-color: #0d1b2a !important;
+  color: #fff !important;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 14px 16px !important;
+  border: none !important;
+}
+
+.table-modern tbody tr {
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.table-modern tbody tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+.table-modern tbody tr:hover {
+  background-color: #eef2ff !important;
+  transform: scale(1.005);
+}
+
+.table-modern tbody td {
+  padding: 12px 16px !important;
+  vertical-align: middle !important;
+  border-color: #f1f5f9 !important;
+  font-size: 14px;
+}
+
+/* ===== Search bar focus glow ===== */
+.search-input:focus {
+  border-color: #4F46E5 !important;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2) !important;
+  outline: none !important;
+}
+
+/* ===== Form input focus ===== */
+.form-control:focus {
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2) !important;
+}
+
+/* ===== Page fade in animation ===== */
+.page-fade {
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
   from {
-    transform: rotate(0deg);
+    opacity: 0;
+    transform: translateY(10px);
   }
   to {
-    transform: rotate(360deg);
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Badge styles ===== */
+.badge-male {
+  background-color: #e0e7ff;
+  color: #4F46E5;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-female {
+  background-color: #fce7f3;
+  color: #ec4899;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ===== Stat card number ===== */
+.stat-number {
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+/* ===== Section card ===== */
+.section-card {
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+  margin-bottom: 24px;
+}
+
+/* ===== Responsive table scroll ===== */
+@media (max-width: 768px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  .stat-number {
+    font-size: 32px;
   }
 }
