@@ -1,4 +1,4 @@
-// AllStudents.js — Dashboard with react-icons and improved stat cards
+// AllStudents.js — Dashboard with improved table, pagination and sorting
 
 import React, { useState, useEffect } from 'react';
 import { Container, Table, Button, Alert, Form, Row, Col } from 'react-bootstrap';
@@ -10,9 +10,7 @@ import {
   PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid
 } from 'recharts';
-
-// React Icons
-import { FaUsers, FaMale, FaFemale, FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
+import { FaUsers, FaMale, FaFemale, FaEdit, FaTrash, FaPlus, FaSort, FaSortUp, FaSortDown, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { MdDashboard, MdBarChart, MdPieChart, MdHistory } from 'react-icons/md';
 
 function AllStudents() {
@@ -25,6 +23,14 @@ function AllStudents() {
   const [maleStudents, setMaleStudents] = useState(0);
   const [femaleStudents, setFemaleStudents] = useState(0);
   const [recentActivity, setRecentActivity] = useState([]);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const studentsPerPage = 5;
+
+  // Sorting state
+  const [sortField, setSortField] = useState('');
+  const [sortOrder, setSortOrder] = useState('asc');
 
   const navigate = useNavigate();
 
@@ -88,6 +94,8 @@ function AllStudents() {
           setMaleStudents(updatedStudents.filter((s) => s.gender.toLowerCase() === 'male').length);
           setFemaleStudents(updatedStudents.filter((s) => s.gender.toLowerCase() === 'female').length);
           buildRecentActivity(updatedStudents);
+          // Reset to page 1 after delete
+          setCurrentPage(1);
         })
         .catch((err) => {
           toast.error('Error deleting student! ❌');
@@ -96,11 +104,51 @@ function AllStudents() {
     }
   };
 
+  // Handle column sort
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortOrder('asc');
+    }
+    setCurrentPage(1);
+  };
+
+  // Get sort icon for column
+  const getSortIcon = (field) => {
+    if (sortField !== field) return <FaSort size={11} style={{ opacity: 0.4, marginLeft: '4px' }} />;
+    return sortOrder === 'asc'
+      ? <FaSortUp size={11} style={{ color: '#4F46E5', marginLeft: '4px' }} />
+      : <FaSortDown size={11} style={{ color: '#4F46E5', marginLeft: '4px' }} />;
+  };
+
+  // Filter students
   const filteredStudents = students.filter(student =>
     student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     student.gender.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Sort students
+  const sortedStudents = [...filteredStudents].sort((a, b) => {
+    if (!sortField) return 0;
+    let aVal = a[sortField];
+    let bVal = b[sortField];
+    if (typeof aVal === 'string') {
+      aVal = aVal.toLowerCase();
+      bVal = bVal.toLowerCase();
+    }
+    if (aVal < bVal) return sortOrder === 'asc' ? -1 : 1;
+    if (aVal > bVal) return sortOrder === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  // Pagination logic
+  const totalPages = Math.ceil(sortedStudents.length / studentsPerPage);
+  const indexOfFirst = (currentPage - 1) * studentsPerPage;
+  const indexOfLast = indexOfFirst + studentsPerPage;
+  const currentStudents = sortedStudents.slice(indexOfFirst, indexOfLast);
 
   const pieData = [
     { name: 'Male', value: maleStudents },
@@ -109,7 +157,6 @@ function AllStudents() {
   const PIE_COLORS = ['#4F46E5', '#ec4899'];
   const barData = buildMonthlyData(students);
 
-  // Stat card data
   const statCards = [
     {
       icon: <FaUsers size={32} />,
@@ -163,25 +210,16 @@ function AllStudents() {
           </div>
         </div>
 
-        {/* Improved Stat Cards */}
+        {/* Stat Cards */}
         <Row className="mb-4">
           {statCards.map((card, index) => (
             <Col md={4} className="mb-3" key={index}>
-              <div
-                className="card-hover"
-                style={{
-                  background: card.gradient,
-                  borderRadius: '18px',
-                  padding: '24px',
-                  color: '#fff',
-                  boxShadow: `0 8px 24px ${card.shadow}`,
-                  cursor: 'pointer',
-                  position: 'relative',
-                  overflow: 'hidden'
-                }}
-                onClick={() => navigate('/students')}
-              >
-                {/* Background decoration circle */}
+              <div className="card-hover" style={{
+                background: card.gradient, borderRadius: '18px',
+                padding: '24px', color: '#fff',
+                boxShadow: `0 8px 24px ${card.shadow}`,
+                cursor: 'pointer', position: 'relative', overflow: 'hidden'
+              }} onClick={() => navigate('/students')}>
                 <div style={{
                   position: 'absolute', top: '-20px', right: '-20px',
                   width: '100px', height: '100px', borderRadius: '50%',
@@ -192,38 +230,25 @@ function AllStudents() {
                   width: '70px', height: '70px', borderRadius: '50%',
                   backgroundColor: 'rgba(255,255,255,0.08)'
                 }} />
-
-                {/* Icon + Value row */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
                   <div style={{
-                    backgroundColor: 'rgba(255,255,255,0.2)',
-                    borderRadius: '12px', padding: '10px',
+                    backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: '12px', padding: '10px',
                     display: 'flex', alignItems: 'center', justifyContent: 'center'
                   }}>
                     {card.icon}
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '42px', fontWeight: '700', lineHeight: '1' }}>
-                      {card.value}
-                    </div>
+                    <div style={{ fontSize: '42px', fontWeight: '700', lineHeight: '1' }}>{card.value}</div>
                   </div>
                 </div>
-
-                {/* Label */}
-                <p style={{ margin: 0, fontWeight: '600', fontSize: '15px', opacity: 0.95 }}>
-                  {card.label}
-                </p>
-
-                {/* Trend indicator */}
-                <p style={{ margin: '4px 0 0 0', fontSize: '12px', opacity: 0.75 }}>
-                  {card.trend}
-                </p>
+                <p style={{ margin: 0, fontWeight: '600', fontSize: '15px', opacity: 0.95 }}>{card.label}</p>
+                <p style={{ margin: '4px 0 0 0', fontSize: '12px', opacity: 0.75 }}>{card.trend}</p>
               </div>
             </Col>
           ))}
         </Row>
 
-        {/* Charts Row */}
+        {/* Charts */}
         <Row className="mb-4">
           <Col md={5} className="mb-4">
             <div className="section-card">
@@ -249,7 +274,6 @@ function AllStudents() {
               )}
             </div>
           </Col>
-
           <Col md={7} className="mb-4">
             <div className="section-card">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
@@ -269,7 +293,7 @@ function AllStudents() {
           </Col>
         </Row>
 
-        {/* Recent Activity Feed */}
+        {/* Recent Activity */}
         <div className="section-card mb-4">
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
             <MdHistory size={20} color="#4F46E5" />
@@ -305,7 +329,7 @@ function AllStudents() {
           )}
         </div>
 
-        {/* Section title and Add button */}
+        {/* Table header row */}
         <Row className="mb-4 align-items-center">
           <Col>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -314,13 +338,11 @@ function AllStudents() {
             </div>
           </Col>
           <Col className="text-end">
-            <Button
-              onClick={() => navigate('/add-student')}
+            <Button onClick={() => navigate('/add-student')}
               style={{
                 background: 'linear-gradient(135deg, #4F46E5, #818cf8)',
-                border: 'none', padding: '10px 20px',
-                fontWeight: '600', borderRadius: '10px',
-                boxShadow: '0 4px 12px rgba(79,70,229,0.3)',
+                border: 'none', padding: '10px 20px', fontWeight: '600',
+                borderRadius: '10px', boxShadow: '0 4px 12px rgba(79,70,229,0.3)',
                 display: 'inline-flex', alignItems: 'center', gap: '6px'
               }}>
               <FaPlus size={13} /> Add New Student
@@ -335,17 +357,19 @@ function AllStudents() {
               type="text"
               placeholder="Search by name, email or gender..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
               className="search-input"
-              style={{
-                borderRadius: '10px', padding: '10px 15px',
-                border: '1.5px solid #e2e8f0', fontSize: '14px'
-              }}
+              style={{ borderRadius: '10px', padding: '10px 15px', border: '1.5px solid #e2e8f0', fontSize: '14px' }}
             />
           </Col>
           <Col>
             <p className="mt-2" style={{ color: '#64748b', fontSize: '14px' }}>
               Showing: <strong style={{ color: '#4F46E5' }}>{filteredStudents.length}</strong> student(s)
+              {totalPages > 1 && (
+                <span style={{ marginLeft: '8px', color: '#94a3b8' }}>
+                  — Page {currentPage} of {totalPages}
+                </span>
+              )}
             </p>
           </Col>
         </Row>
@@ -360,20 +384,46 @@ function AllStudents() {
             <p style={{ color: '#64748b', marginTop: '15px', fontSize: '14px' }}>Loading students...</p>
           </div>
         ) : (
-          <div className="section-card table-modern" style={{ padding: '0', overflow: 'hidden' }}>
+          <div className="section-card" style={{ padding: '0', overflow: 'hidden' }}>
             <Table className="table-modern mb-0" responsive>
               <thead>
                 <tr>
-                  <th>#</th>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Age</th>
-                  <th>Gender</th>
+                  <th style={{ width: '50px' }}>#</th>
+
+                  {/* Sortable Name column */}
+                  <th style={{ cursor: 'pointer', userSelect: 'none' }} onClick={() => handleSort('name')}>
+                    <span style={{ display: 'flex', alignItems: 'center' }}>
+                      Name {getSortIcon('name')}
+                    </span>
+                  </th>
+
+                  {/* Sortable Email column */}
+                  <th style={{ cursor: 'pointer', userSelect: 'none' }} onClick={() => handleSort('email')}>
+                    <span style={{ display: 'flex', alignItems: 'center' }}>
+                      Email {getSortIcon('email')}
+                    </span>
+                  </th>
+
+                  {/* Sortable Age column */}
+                  <th style={{ cursor: 'pointer', userSelect: 'none' }} onClick={() => handleSort('age')}>
+                    <span style={{ display: 'flex', alignItems: 'center' }}>
+                      Age {getSortIcon('age')}
+                    </span>
+                  </th>
+
+                  {/* Sortable Gender column */}
+                  <th style={{ cursor: 'pointer', userSelect: 'none' }} onClick={() => handleSort('gender')}>
+                    <span style={{ display: 'flex', alignItems: 'center' }}>
+                      Gender {getSortIcon('gender')}
+                    </span>
+                  </th>
+
                   <th>Actions</th>
                 </tr>
               </thead>
+
               <tbody>
-                {filteredStudents.length === 0 ? (
+                {currentStudents.length === 0 ? (
                   <tr>
                     <td colSpan="6" className="text-center">
                       <div style={{ padding: '40px' }}>
@@ -386,9 +436,11 @@ function AllStudents() {
                     </td>
                   </tr>
                 ) : (
-                  filteredStudents.map((student, index) => (
+                  currentStudents.map((student, index) => (
                     <tr key={student._id}>
-                      <td style={{ color: '#64748b', fontWeight: '500' }}>{index + 1}</td>
+                      <td style={{ color: '#64748b', fontWeight: '500' }}>
+                        {indexOfFirst + index + 1}
+                      </td>
                       <td style={{ fontWeight: '600', color: '#0d1b2a' }}>{student.name}</td>
                       <td style={{ color: '#64748b', fontSize: '13px' }}>{student.email}</td>
                       <td style={{ fontWeight: '500' }}>{student.age}</td>
@@ -402,18 +454,12 @@ function AllStudents() {
                       </td>
                       <td>
                         <Button variant="warning" size="sm" className="me-2"
-                          style={{
-                            borderRadius: '8px', fontWeight: '600', fontSize: '12px',
-                            display: 'inline-flex', alignItems: 'center', gap: '4px'
-                          }}
+                          style={{ borderRadius: '8px', fontWeight: '600', fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
                           onClick={() => navigate(`/update-student/${student._id}`)}>
                           <FaEdit size={11} /> Edit
                         </Button>
                         <Button variant="danger" size="sm"
-                          style={{
-                            borderRadius: '8px', fontWeight: '600', fontSize: '12px',
-                            display: 'inline-flex', alignItems: 'center', gap: '4px'
-                          }}
+                          style={{ borderRadius: '8px', fontWeight: '600', fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
                           onClick={() => deleteStudent(student._id)}>
                           <FaTrash size={11} /> Delete
                         </Button>
@@ -423,6 +469,79 @@ function AllStudents() {
                 )}
               </tbody>
             </Table>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div style={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                padding: '16px 20px', borderTop: '1px solid #f1f5f9',
+                backgroundColor: '#fafbff'
+              }}>
+                {/* Page info */}
+                <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>
+                  Showing <strong style={{ color: '#4F46E5' }}>{indexOfFirst + 1}</strong> to{' '}
+                  <strong style={{ color: '#4F46E5' }}>{Math.min(indexOfLast, sortedStudents.length)}</strong> of{' '}
+                  <strong style={{ color: '#4F46E5' }}>{sortedStudents.length}</strong> students
+                </p>
+
+                {/* Page buttons */}
+                <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+
+                  {/* Previous button */}
+                  <button
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    style={{
+                      padding: '6px 12px', borderRadius: '8px', border: '1.5px solid #e2e8f0',
+                      backgroundColor: currentPage === 1 ? '#f8fafc' : '#fff',
+                      color: currentPage === 1 ? '#94a3b8' : '#4F46E5',
+                      cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                      display: 'flex', alignItems: 'center', gap: '4px',
+                      fontSize: '13px', fontWeight: '500', transition: '0.2s'
+                    }}
+                  >
+                    <FaChevronLeft size={11} /> Prev
+                  </button>
+
+                  {/* Page numbers */}
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      style={{
+                        width: '34px', height: '34px', borderRadius: '8px',
+                        border: '1.5px solid',
+                        borderColor: currentPage === page ? '#4F46E5' : '#e2e8f0',
+                        backgroundColor: currentPage === page ? '#4F46E5' : '#fff',
+                        color: currentPage === page ? '#fff' : '#64748b',
+                        cursor: 'pointer', fontSize: '13px', fontWeight: '600',
+                        transition: '0.2s'
+                      }}
+                    >
+                      {page}
+                    </button>
+                  ))}
+
+                  {/* Next button */}
+                  <button
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    style={{
+                      padding: '6px 12px', borderRadius: '8px', border: '1.5px solid #e2e8f0',
+                      backgroundColor: currentPage === totalPages ? '#f8fafc' : '#fff',
+                      color: currentPage === totalPages ? '#94a3b8' : '#4F46E5',
+                      cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                      display: 'flex', alignItems: 'center', gap: '4px',
+                      fontSize: '13px', fontWeight: '500', transition: '0.2s'
+                    }}
+                  >
+                    Next <FaChevronRight size={11} />
+                  </button>
+
+                </div>
+              </div>
+            )}
+
           </div>
         )}
 
