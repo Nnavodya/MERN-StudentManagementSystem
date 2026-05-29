@@ -1,4 +1,4 @@
-// AllStudents.js — Student dashboard with pie chart, bar chart, and recent activity feed
+// AllStudents.js — Dashboard with react-icons and improved stat cards
 
 import React, { useState, useEffect } from 'react';
 import { Container, Table, Button, Alert, Form, Row, Col } from 'react-bootstrap';
@@ -10,6 +10,10 @@ import {
   PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid
 } from 'recharts';
+
+// React Icons
+import { FaUsers, FaMale, FaFemale, FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
+import { MdDashboard, MdBarChart, MdPieChart, MdHistory } from 'react-icons/md';
 
 function AllStudents() {
 
@@ -105,59 +109,128 @@ function AllStudents() {
   const PIE_COLORS = ['#4F46E5', '#ec4899'];
   const barData = buildMonthlyData(students);
 
+  // Stat card data
+  const statCards = [
+    {
+      icon: <FaUsers size={32} />,
+      label: 'Total Students',
+      value: totalStudents,
+      gradient: 'linear-gradient(135deg, #4F46E5, #818cf8)',
+      shadow: 'rgba(79,70,229,0.35)',
+      trend: '👥 All registered'
+    },
+    {
+      icon: <FaMale size={32} />,
+      label: 'Male Students',
+      value: maleStudents,
+      gradient: 'linear-gradient(135deg, #06B6D4, #22d3ee)',
+      shadow: 'rgba(6,182,212,0.35)',
+      trend: `${totalStudents > 0 ? ((maleStudents / totalStudents) * 100).toFixed(0) : 0}% of total`
+    },
+    {
+      icon: <FaFemale size={32} />,
+      label: 'Female Students',
+      value: femaleStudents,
+      gradient: 'linear-gradient(135deg, #ec4899, #f472b6)',
+      shadow: 'rgba(236,72,153,0.35)',
+      trend: `${totalStudents > 0 ? ((femaleStudents / totalStudents) * 100).toFixed(0) : 0}% of total`
+    }
+  ];
+
   return (
     <>
       <ToastContainer position="top-right" autoClose={3000} />
 
       <Container className="mt-5 page-fade">
 
-        <h2 style={{ fontWeight: '700', marginBottom: '25px', color: '#0d1b2a', letterSpacing: '-0.5px' }}>
-          📊 Student Dashboard
-        </h2>
+        {/* Dashboard Title */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '28px' }}>
+          <div style={{
+            width: '42px', height: '42px', borderRadius: '12px',
+            background: 'linear-gradient(135deg, #4F46E5, #818cf8)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 4px 12px rgba(79,70,229,0.3)'
+          }}>
+            <MdDashboard size={22} color="#fff" />
+          </div>
+          <div>
+            <h4 style={{ fontWeight: '700', color: '#0d1b2a', margin: 0, letterSpacing: '-0.3px' }}>
+              Student Dashboard
+            </h4>
+            <p style={{ color: '#64748b', fontSize: '13px', margin: 0 }}>
+              Manage and monitor student records
+            </p>
+          </div>
+        </div>
 
-        {/* Stat cards */}
+        {/* Improved Stat Cards */}
         <Row className="mb-4">
-          <Col md={4} className="mb-3">
-            <div className="card-hover" style={{
-              background: 'linear-gradient(135deg, #4F46E5, #818cf8)',
-              borderRadius: '16px', padding: '28px', color: '#fff',
-              boxShadow: '0 4px 15px rgba(79,70,229,0.3)', cursor: 'pointer'
-            }} onClick={() => navigate('/students')}>
-              <p style={{ margin: 0, fontSize: '14px', opacity: 0.85, fontWeight: '500' }}>📚 Total Students</p>
-              <div className="stat-number">{totalStudents}</div>
-            </div>
-          </Col>
+          {statCards.map((card, index) => (
+            <Col md={4} className="mb-3" key={index}>
+              <div
+                className="card-hover"
+                style={{
+                  background: card.gradient,
+                  borderRadius: '18px',
+                  padding: '24px',
+                  color: '#fff',
+                  boxShadow: `0 8px 24px ${card.shadow}`,
+                  cursor: 'pointer',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+                onClick={() => navigate('/students')}
+              >
+                {/* Background decoration circle */}
+                <div style={{
+                  position: 'absolute', top: '-20px', right: '-20px',
+                  width: '100px', height: '100px', borderRadius: '50%',
+                  backgroundColor: 'rgba(255,255,255,0.1)'
+                }} />
+                <div style={{
+                  position: 'absolute', bottom: '-30px', right: '30px',
+                  width: '70px', height: '70px', borderRadius: '50%',
+                  backgroundColor: 'rgba(255,255,255,0.08)'
+                }} />
 
-          <Col md={4} className="mb-3">
-            <div className="card-hover" style={{
-              background: 'linear-gradient(135deg, #06B6D4, #22d3ee)',
-              borderRadius: '16px', padding: '28px', color: '#fff',
-              boxShadow: '0 4px 15px rgba(6,182,212,0.3)', cursor: 'pointer'
-            }} onClick={() => navigate('/students')}>
-              <p style={{ margin: 0, fontSize: '14px', opacity: 0.85, fontWeight: '500' }}>👨 Male Students</p>
-              <div className="stat-number">{maleStudents}</div>
-            </div>
-          </Col>
+                {/* Icon + Value row */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                  <div style={{
+                    backgroundColor: 'rgba(255,255,255,0.2)',
+                    borderRadius: '12px', padding: '10px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center'
+                  }}>
+                    {card.icon}
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: '42px', fontWeight: '700', lineHeight: '1' }}>
+                      {card.value}
+                    </div>
+                  </div>
+                </div>
 
-          <Col md={4} className="mb-3">
-            <div className="card-hover" style={{
-              background: 'linear-gradient(135deg, #ec4899, #f472b6)',
-              borderRadius: '16px', padding: '28px', color: '#fff',
-              boxShadow: '0 4px 15px rgba(236,72,153,0.3)', cursor: 'pointer'
-            }} onClick={() => navigate('/students')}>
-              <p style={{ margin: 0, fontSize: '14px', opacity: 0.85, fontWeight: '500' }}>👩 Female Students</p>
-              <div className="stat-number">{femaleStudents}</div>
-            </div>
-          </Col>
+                {/* Label */}
+                <p style={{ margin: 0, fontWeight: '600', fontSize: '15px', opacity: 0.95 }}>
+                  {card.label}
+                </p>
+
+                {/* Trend indicator */}
+                <p style={{ margin: '4px 0 0 0', fontSize: '12px', opacity: 0.75 }}>
+                  {card.trend}
+                </p>
+              </div>
+            </Col>
+          ))}
         </Row>
 
         {/* Charts Row */}
         <Row className="mb-4">
           <Col md={5} className="mb-4">
             <div className="section-card">
-              <h6 style={{ color: '#0d1b2a', marginBottom: '20px', fontWeight: '600' }}>
-                🥧 Gender Distribution
-              </h6>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
+                <MdPieChart size={20} color="#4F46E5" />
+                <h6 style={{ color: '#0d1b2a', margin: 0, fontWeight: '600' }}>Gender Distribution</h6>
+              </div>
               {totalStudents === 0 ? (
                 <p style={{ color: '#94a3b8', textAlign: 'center', paddingTop: '40px' }}>No data available</p>
               ) : (
@@ -179,9 +252,10 @@ function AllStudents() {
 
           <Col md={7} className="mb-4">
             <div className="section-card">
-              <h6 style={{ color: '#0d1b2a', marginBottom: '20px', fontWeight: '600' }}>
-                📈 Monthly Registrations
-              </h6>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
+                <MdBarChart size={20} color="#4F46E5" />
+                <h6 style={{ color: '#0d1b2a', margin: 0, fontWeight: '600' }}>Monthly Registrations</h6>
+              </div>
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={barData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
@@ -197,11 +271,12 @@ function AllStudents() {
 
         {/* Recent Activity Feed */}
         <div className="section-card mb-4">
-          <h6 style={{ color: '#0d1b2a', marginBottom: '20px', fontWeight: '600' }}>
-            🏆 Recent Activity
-          </h6>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
+            <MdHistory size={20} color="#4F46E5" />
+            <h6 style={{ color: '#0d1b2a', margin: 0, fontWeight: '600' }}>Recent Activity</h6>
+          </div>
           {recentActivity.length === 0 ? (
-            <p style={{ color: '#94a3b8' }}>No recent activity found.</p>
+            <p style={{ color: '#94a3b8', fontSize: '14px' }}>No recent activity found.</p>
           ) : (
             recentActivity.map((activity, index) => (
               <div key={index} style={{
@@ -211,9 +286,10 @@ function AllStudents() {
                 borderLeft: `4px solid ${activity.gender.toLowerCase() === 'male' ? '#4F46E5' : '#ec4899'}`
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <span style={{ fontSize: '22px' }}>
-                    {activity.gender.toLowerCase() === 'male' ? '👨' : '👩'}
-                  </span>
+                  {activity.gender.toLowerCase() === 'male'
+                    ? <FaMale size={20} color="#4F46E5" />
+                    : <FaFemale size={20} color="#ec4899" />
+                  }
                   <span style={{ color: '#1e293b', fontWeight: '500', fontSize: '14px' }}>
                     {activity.message}
                   </span>
@@ -232,12 +308,22 @@ function AllStudents() {
         {/* Section title and Add button */}
         <Row className="mb-4 align-items-center">
           <Col>
-            <h4 style={{ color: '#0d1b2a', fontWeight: '700' }}>👨‍🎓 All Students</h4>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <FaUsers size={20} color="#4F46E5" />
+              <h5 style={{ color: '#0d1b2a', fontWeight: '700', margin: 0 }}>All Students</h5>
+            </div>
           </Col>
           <Col className="text-end">
-            <Button onClick={() => navigate('/add-student')}
-              style={{ backgroundColor: '#4F46E5', border: 'none', padding: '10px 20px', fontWeight: '600' }}>
-              ➕ Add New Student
+            <Button
+              onClick={() => navigate('/add-student')}
+              style={{
+                background: 'linear-gradient(135deg, #4F46E5, #818cf8)',
+                border: 'none', padding: '10px 20px',
+                fontWeight: '600', borderRadius: '10px',
+                boxShadow: '0 4px 12px rgba(79,70,229,0.3)',
+                display: 'inline-flex', alignItems: 'center', gap: '6px'
+              }}>
+              <FaPlus size={13} /> Add New Student
             </Button>
           </Col>
         </Row>
@@ -247,11 +333,14 @@ function AllStudents() {
           <Col md={4}>
             <Form.Control
               type="text"
-              placeholder="🔍 Search by name, email or gender..."
+              placeholder="Search by name, email or gender..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="search-input"
-              style={{ borderRadius: '10px', padding: '10px 15px', border: '1.5px solid #e2e8f0', fontSize: '14px' }}
+              style={{
+                borderRadius: '10px', padding: '10px 15px',
+                border: '1.5px solid #e2e8f0', fontSize: '14px'
+              }}
             />
           </Col>
           <Col>
@@ -305,19 +394,28 @@ function AllStudents() {
                       <td style={{ fontWeight: '500' }}>{student.age}</td>
                       <td>
                         <span className={student.gender.toLowerCase() === 'male' ? 'badge-male' : 'badge-female'}>
-                          {student.gender}
+                          {student.gender.toLowerCase() === 'male'
+                            ? <><FaMale size={11} /> {student.gender}</>
+                            : <><FaFemale size={11} /> {student.gender}</>
+                          }
                         </span>
                       </td>
                       <td>
                         <Button variant="warning" size="sm" className="me-2"
-                          style={{ borderRadius: '8px', fontWeight: '600', fontSize: '12px' }}
+                          style={{
+                            borderRadius: '8px', fontWeight: '600', fontSize: '12px',
+                            display: 'inline-flex', alignItems: 'center', gap: '4px'
+                          }}
                           onClick={() => navigate(`/update-student/${student._id}`)}>
-                          ✏️ Edit
+                          <FaEdit size={11} /> Edit
                         </Button>
                         <Button variant="danger" size="sm"
-                          style={{ borderRadius: '8px', fontWeight: '600', fontSize: '12px' }}
+                          style={{
+                            borderRadius: '8px', fontWeight: '600', fontSize: '12px',
+                            display: 'inline-flex', alignItems: 'center', gap: '4px'
+                          }}
                           onClick={() => deleteStudent(student._id)}>
-                          🗑️ Delete
+                          <FaTrash size={11} /> Delete
                         </Button>
                       </td>
                     </tr>
